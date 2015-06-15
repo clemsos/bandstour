@@ -17,7 +17,7 @@ count = 0
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
 for f in os.listdir(DATA_FOLDER):
-    with open(os.path.join(DATA_FOLDER, f)) as shows_file:    
+    with open(os.path.join(DATA_FOLDER, f)) as shows_file: 
         shows = json.load( shows_file)
 
         for show in shows : 

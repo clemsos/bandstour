@@ -48,7 +48,10 @@ for place in places :
     if place != "":  place.replace(' ',"%20")
     place = place+"%2C+France"
     # print  get_page_url(place, 1)
-    get_dates_from_place(place)
+    try :
+        get_dates_from_place(place)
+    except :
+        pass
 
 # with open('data/london.json') as data_file:    
 #     data = json.load(data_file)
