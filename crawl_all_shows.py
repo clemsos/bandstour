@@ -47,9 +47,8 @@ with open('list_villes/prefs') as pref_file:
 for place in places :
     if place != "":  place.replace(' ',"%20")
     place = place+"%2C+France"
-    print  get_page_url(place, 1)
-
-
+    # print  get_page_url(place, 1)
+    get_dates_from_place(place)
 
 # with open('data/london.json') as data_file:    
 #     data = json.load(data_file)
