@@ -24,8 +24,8 @@ if (Meteor.isServer) {
 
 
 Meteor.methods({
-    getShow: function () {
-      return Shows.findOne();
+    getShowByVenue: function () {
+      return Shows.aggregate();
     }
 })
 
