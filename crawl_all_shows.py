@@ -9,7 +9,7 @@ DATES_BASE_URL = "http://api.bandsintown.com/artists/ARTIST/events.json?app_id=Y
 bands_urls=[]
 
 def get_filename(place, page_number):
-    return "data/place/"+ place+ "_" + str(page_number) +".json" 
+    return "data/place/"+ place.split("%")[0]+ "_" + str(page_number) +".json" 
 
 def get_page_url(place, page_number):
     url = PLACE_BASE_URL.replace("PLACE", place) # base url
@@ -17,7 +17,7 @@ def get_page_url(place, page_number):
 
 def get_page(place, page_number):
     url = get_page_url(place, page_number)
-    urllib.urlretrieve( url , filename=get_filename(place.split("%")[0]) )
+    urllib.urlretrieve( url , filename=get_filename(place, page_number))
 
 def get_dates_from_place(place):
 
@@ -27,12 +27,12 @@ def get_dates_from_place(place):
     # compute number of pages
     with open( get_filename(place, 1) ) as data_file:    
         page = json.load(data_file)
-        nb_of_pages = round( page["pages"]["total_results"] / page["pages"]["results_per_page"])
+        nb_of_pages = round( int(page["pages"]["total_results"]) / int(page["pages"]["results_per_page"]) )
 
     # crawl api
     for page_number in range(2, int(nb_of_pages)) :
         time.sleep(1)
-        print page_number + "/" + nb_of_pages
+        print place, str(page_number), "/", str(nb_of_pages)
         get_page(place,  page_number)
 
 # places = ["London%2C+UK", "Lyon%2C+France", "Paris%2C+France"]
