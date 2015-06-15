@@ -1,23 +1,31 @@
+Shows = new Meteor.Collection("london_bandsintown");
+
 if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
-    }
-  });
+  Meteor.subscribe('shows');
 
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
-    }
-  });
+    Template.body.helpers({
+      shows: function () {
+        return Shows.find({}, {sort: {datetime: -1}});
+      }
+    });
+
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
+    Meteor.publish("shows", function () {
+      return Shows.find()
+    })
+
     // code to run on server at startup
   });
 }
+
+
+Meteor.methods({
+    getShow: function () {
+      return Shows.findOne();
+    }
+})
+
