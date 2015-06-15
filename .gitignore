@@ -1,4 +1,9 @@
 venv
+node_modules
+activate
+init
+cesium
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
