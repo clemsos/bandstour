@@ -3,7 +3,7 @@ import urllib
 import time
 import csv
 
-PLACE_BASE_URL = "https://app.bandsintown.com/events/popular/?location=PLACE&radius=150&per_page=100&authenticate=false&page=PAGE_NUMBER"
+PLACE_BASE_URL = "https://app.bandsintown.com/events/popular/?location=PLACE&radius=10&per_page=100&authenticate=false&page=PAGE_NUMBER"
 
 DATES_BASE_URL = "http://api.bandsintown.com/artists/ARTIST/events.json?app_id=YOUR_APP_ID"
 bands_urls=[]
@@ -12,15 +12,17 @@ def get_filename(place, page_number):
     return "data/place/"+ place+ "_" + str(page_number) +".json" 
 
 def get_page_url(place, page_number):
-    urllib.urlretrieve( url.replace("PAGE_NUMBER", str(page_number)), filename=get_filename(place.split("%")[0], 1) ) 
+    url = PLACE_BASE_URL.replace("PLACE", place) # base url
+    return url.replace("PAGE_NUMBER", str(page_number))
+
+def get_page(place, page_number):
+    url = get_page_url(place, page_number)
+    urllib.urlretrieve( url , filename=get_filename(place.split("%")[0]) )
 
 def get_dates_from_place(place):
 
-    # base url
-    url = PLACE_BASE_URL.replace("PLACE", place)
-
     # save first page
-    page = get_page_url(place, 1)
+    page = get_page(place, 1)
 
     # compute number of pages
     with open( get_filename(place, 1) ) as data_file:    
@@ -35,9 +37,18 @@ def get_dates_from_place(place):
 
 # places = ["London%2C+UK", "Lyon%2C+France", "Paris%2C+France"]
 
+places = []
+with open('list_villes/sousprefs') as souspref_file:
+    places = souspref_file.read().splitlines()
+
+with open('list_villes/prefs') as pref_file:
+    places += pref_file.read().splitlines()
 
 for place in places :
-    print place
+    if place != "":  place.replace(' ',"%20")
+    place = place+"%2C+France"
+    print  get_page_url(place, 1)
+
 
 
 # with open('data/london.json') as data_file:    
