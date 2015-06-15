@@ -21,12 +21,16 @@ json@1.0.3
 launch-screen@1.0.2
 livedata@1.0.13
 logging@1.0.7
+maxkfranz:cytoscape@2.4.1
 meteor@1.1.6
 meteor-platform@1.2.2
+meteorhacks:aggregate@1.2.1
+meteorhacks:collection-utils@1.2.0
 minifiers@1.1.5
 minimongo@1.0.8
 mobile-status-bar@1.0.3
 mongo@1.1.0
+mongo-livedata@1.0.8
 observe-sequence@1.0.6
 ordered-dict@1.0.3
 random@1.0.3
