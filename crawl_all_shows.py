@@ -8,13 +8,17 @@ import csv
 import math
 import os
 
-PLACE_BASE_URL = "https://app.bandsintown.com/events/popular/?location=PLACE&radius=10&per_page=100&authenticate=false&page=PAGE_NUMBER"
+# dir
+places_dir = "data/places/"
+artists_dir = "data/artists/"
 
+# API
+PLACE_BASE_URL = "https://app.bandsintown.com/events/popular/?location=PLACE&radius=10&per_page=100&authenticate=false&page=PAGE_NUMBER"
 DATES_BASE_URL = "http://api.bandsintown.com/artists/ARTIST/events.json?app_id=YOUR_APP_ID"
 bands_urls=[]
 
 def get_filename(place, page_number):
-    return "data/place/"+ place.split("%")[0]+ "_" + str(page_number) +".json" 
+    return places_dir + place.split("%")[0]+ "_" + str(page_number) +".json" 
 
 def get_page_url(place, page_number):
     url = PLACE_BASE_URL.replace("PLACE", place) # base url
@@ -25,13 +29,13 @@ def get_page(place, page_number):
     f = get_filename(place, page_number)
 
     # check if the file already exists
-    if not os.path.isfile(f):  
+    if not os.path.isfile(f):
         print f, " downloading"
+        time.sleep(1)
         url = get_page_url(place, page_number)
         urllib.urlretrieve( url , filename=f)
     else :
         print f, " already exists"
-
 
 def get_dates_from_place(place):
 
@@ -39,19 +43,17 @@ def get_dates_from_place(place):
     page = get_page(place, 1)
 
     # compute number of pages
-    with open( get_filename(place, 1) ) as data_file:    
+    with open( get_filename(place, 1) ) as data_file:
         page = json.load(data_file)
-        nb_of_pages =  math.ceil( int(page["pages"]["total_results"]) / int(page["pages"]["results_per_page"]) ) +1
+        nb_of_pages =  int( math.ceil( int(page["pages"]["total_results"]) / int(page["pages"]["results_per_page"]) ) ) + 2
         print "  total", place, nb_of_pages
 
     # crawl api
-    for page_number in range(2, int(nb_of_pages)+1) :
-        time.sleep(1)
+    for page_number in range(2, nb_of_pages) :
         # print place, str(page_number), "/", str(nb_of_pages)
         get_page(place,  page_number)
 
-# places = ["London%2C+UK", "Lyon%2C+France", "Paris%2C+France"]
-
+# parse places
 places = []
 with open('list_villes/sousprefs') as souspref_file:
     places = souspref_file.read().splitlines()
@@ -59,10 +61,10 @@ with open('list_villes/sousprefs') as souspref_file:
 with open('list_villes/prefs') as pref_file:
     places += pref_file.read().splitlines()
 
-# places = ["Saint-Jean-d’Angély"] # reproduce error
-
+# get data from places
 for place in places :
-    if place != "":  place.replace(' ',"%20")
+    place.replace(' ',"%20")
+
     place = place+"%2C+France"
     # print  get_page_url(place, 1)
     try :
@@ -70,12 +72,31 @@ for place in places :
     except :
         print "ERROR :",  place
 
-# with open('data/london.json') as data_file:    
-#     data = json.load(data_file)
-#     for event in data["data"]["events"] : 
-#         for artist in event["artists"]:
-#             print artist["name"]
+# get a unique list of artists 
+artists = []
+for f in os.listdir(places_dir):
+    # print "--- ", f
+    if f != "_1.json" : 
+        with open(os.path.join(places_dir,f)) as data_file:    
+            try :
+                data = json.load(data_file)
+                for event in data["data"]["events"] : 
+                    for artist in event["artists"]:
+                        if artist["name"] not in artists : artists.append(artist["name"])
+                        # print artist["name"]
+            except ValueError :
+                pass # json not parsable
 
-#             url = DATES_BASE_URL.replace("ARTIST", artist["name"].replace(' ',"%20")).encode('utf8')
-#             urllib.urlretrieve( url , filename="data/artists/" + artist["name"] + ".json")
+print "total : %s artists"%len( set(artists) )
 
+# crawl all artists
+for i, artist in enumerate(artists) :
+    f = os.path.join(artists_dir, artist.replace(" ", "_").replace("/", "_") + ".json")
+    print str(i) + "/" + str(len(artists))
+    if not os.path.isfile(f):
+        url = DATES_BASE_URL.replace("ARTIST", artist.replace(' ',"%20")).encode('utf8')
+        print "download : ", url
+        urllib.urlretrieve( url , filename=f)
+        time.sleep(1)
+    else :
+        print f, "already exists"
