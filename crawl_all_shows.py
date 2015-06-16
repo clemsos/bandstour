@@ -14,7 +14,7 @@ artists_dir = "data/artists/"
 
 # API
 PLACE_BASE_URL = "https://app.bandsintown.com/events/popular/?location=PLACE&radius=10&per_page=100&authenticate=false&page=PAGE_NUMBER"
-DATES_BASE_URL = "http://api.bandsintown.com/artists/ARTIST/events.json?app_id=YOUR_APP_ID"
+DATES_BASE_URL = "http://api.bandsintown.com/artists/ARTIST/events.json?app_id=YOUR_APP_ID&date=all"
 bands_urls=[]
 
 def get_filename(place, page_number):
