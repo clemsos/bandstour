@@ -4,10 +4,12 @@ import pymongo
 from datetime import datetime
 from pymongo import MongoClient
 
+from dateutil import parser
+
 # setup mongo
 client = MongoClient()
 db = client["bandstour"]
-bandsintown =  db["london_bandsintown"]
+bandsintown =  db["bandsintown"]
 
 # source data
 DATA_FOLDER = "data/artists"
@@ -17,19 +19,25 @@ count = 0
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
 for f in os.listdir(DATA_FOLDER):
-    with open(os.path.join(DATA_FOLDER, f)) as shows_file: 
-        shows = json.load( shows_file)
+    # print count, f
+    statinfo = os.path.getsize(os.path.join(DATA_FOLDER, f))
+    if(statinfo > 500): 
+        with open(os.path.join(DATA_FOLDER, f)) as shows_file: 
+            try : 
+                shows = json.load( shows_file)
+            except ValueError :
+                shows = [] 
 
-        for show in shows : 
-            # print show["datetime"], show["venue"]["country"]
-            count = count +1
-            show["datetime"] = datetime.strptime(show["datetime"], DATETIME_FORMAT)
-            bandsintown.insert(show)
-
-
-            # city  = lookup_city( show["venue"]["city"] )
-            # venue = lookup_venue( show["venue"]["city"] )
-            # show = lookup_show( show["datetime"], show["artists"] )
+            for show in shows : 
+                # print show["datetime"], show["venue"]["country"]
+                count = count +1
+                show["datetime"] = parser.parse(show["datetime"])
+                bandsintown.insert(show)
+    else : 
+        print "FILE ERROR :%s "%f
+        # city  = lookup_city( show["venue"]["city"] )
+        # venue = lookup_venue( show["venue"]["city"] )
+        # show = lookup_show( show["datetime"], show["artists"] )
 
 print count
 
