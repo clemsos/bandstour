@@ -1,7 +1,7 @@
 var client = require('mongodb').MongoClient;
 
 // Connection URL
-var url = 'mongodb://localhost:27017/bandstour';
+var url = 'mongodb://localhost:27017/bandsintown';
 
 // Use connect method to connect to the Server
 client.connect(url, function(err, db) {
@@ -13,7 +13,10 @@ client.connect(url, function(err, db) {
     var selectedGigsCollection = db.collection('selectedGigs');
     var venuesCollection = db.collection('venues');
 
-    sampleGigs(50, db, gigsCollection, venuesCollection, function (){
+    //storeAllVenues(gigsCollection, "venues" ,function(){
+
+    //db.close();})
+    sampleGigs(0, db, gigsCollection, venuesCollection, function (){
         db.close();
     });
 
@@ -184,6 +187,7 @@ function storeAllArtists (collection, newCollName, callback) {
         }
         , { $out : newCollName}
     ] // end pipeline
+    ,{allowDiskUse : true}
     , function (err, result) {
         if (err) { console.log(err); return; }
         
