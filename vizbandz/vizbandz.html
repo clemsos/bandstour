@@ -1,27 +1,26 @@
 <head>
-  <title>vizbandz</title>
-  <script src="http://marvl.infotech.monash.edu/webcola/cola.v3.min.js"></script>
+  <title>vizband2</title>
+    <style>
+        #map { 
+            height: 480px;
+            border : 1px solid #CCC;
+        }
+
+    </style>
 </head>
 
 <body>
-  <h1>Vizbandz</h1>
-  <h2>Vizbandz is the app you need to book bands opportunistically</h2>
+  <h1>Welcome to Bandstour!</h1>
 
-    <div id="cy"></div>
-    <div id="menu">
-        <button id="layout">Apply layout</button>
-    </div>
-<!--       <ul>
-      {{#each shows}}
-        {{> show}}
-      {{/each}}
-    </ul> -->
-
+  {{> map}}
 </body>
 
-<template name="show">
-
-<li>
-    {{ venue.name}}, {{ venue.city}}  - {{ datetime }}
-</li>
+<template name="map">
+  <form action="">
+    <input type="text" name="bandName">
+    <button type="submit">Lookup</button>
+  </form>
+  <div id="map">
+      
+  </div>
 </template>

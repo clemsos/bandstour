@@ -1,145 +1,118 @@
-Shows = new Meteor.Collection("london_bandsintown");
+// Gigs = new Mongo.Collection("selectedGigs");
+Artists = new Mongo.Collection("selectedArtists");
 
-
-function  initNetwork() {
-
-  cy = cytoscape({
-    container: document.getElementById('cy'),
-    style: cytoscape.stylesheet()
-      .selector('node')
-        .css({
-          'font-size': 10,
-          'content': 'data(name)',
-          'text-valign': 'center',
-          'color': 'white',
-          'text-outline-width': 2,
-          'text-outline-color': '#888',
-          'min-zoomed-font-size': 8,
-          'width': 'mapData(score, 0, 1, 20, 50)',
-          'height': 'mapData(score, 0, 1, 20, 50)'
-        })
-  });
-
-   Tracker.autorun(function(){
-   
-   })
-}
 
 if (Meteor.isClient) {
 
-    Meteor.subscribe('shows');
-
-
-    Meteor.startup(function () {
-      initNetwork()
-      
-        Meteor.call("getCommonShows",function (error, result) { 
-
-      for (var i = 0; i < result.length; i++) {
-             if (result[i].count == 2) {
-              var id = _.values(result[i]._id).toString() ;
-              cy.add([
-                    { group: "nodes", data: { id: result[i]["artists"][0], name: result[i]["artists"][0] } , position: {x: i*10, y: 150}} ,
-                    { group: "nodes", data: { id: result[i]["artists"][1],  name: result[i]["artists"][1] } , position: {x: i*10, y: 200}} ,  
-                    { group : "edges", data: { id  : id,  source : result[i]["artists"][0], target : result[i]["artists"][1]} } 
-              ])
-             } else if (result[i].count > 2) {
-              var pairs = pairwise(result[i].artists);
-              for (var j = 0; j < pairs.length; j++) {
-                  console.log( pairs[j][0],  pairs[j][1]);
-                  // var id = _.values(result[i]._id).toString() ;
-                 cy.add([
-                    { group: "nodes", data: { id: pairs[j][0], name: pairs[j][0] } , position: {x: i*10, y: 50}} ,
-                    { group: "nodes", data: { id: pairs[j][1], name: pairs[j][1] } , position: {x: i*10, y: 100}} ,  
-                    { group : "edges", data: {  source : pairs[j][0], target : pairs[j][1]} } 
-                ])
-              } 
-              }
-        }
-    });
-    console.log(cy.nodes().length, cy.edges().length)
-
-
-      $('#layout').on('click', function(){
-        console.log('layout');
-      var layout = cy.makeLayout({ name: 'cola' });
-      layout.run();
-
-    });
-
+  Template.map.helpers({
+    counter: function () {
+      return Session.get('counter');
+    }
   });
 
-    Template.body.helpers({
-      shows: function () {
-        return Shows.find({}, {sort: {datetime: -1}});
-      }
-    });
+  Template.map.rendered = function() {
+      L.Icon.Default.imagePath = 'packages/bevanhunt_leaflet/images';
 
+      var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+      var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 16, attribution: osmAttrib});   
+
+      var map = L.map('map').setView([51.505, -0.09], 13);
+      map.addLayer(osm);
+      this.map = map;
+  }
+
+  Template.map.events({
+    'submit form': function (e, template) {
+      
+      e.preventDefault()
+      
+
+      // / Get value from form element
+      var bandName = event.target.bandName.value;
+
+      var self = this;
+      console.log(template);
+      console.log(self);
+
+      if( !bandName ) return
+
+       var getRandomColor = function() {
+          var letters = '0123456789ABCDEF'.split('');
+          var color = '#';
+          for (var i = 0; i < 6; i++ ) {
+              color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+      }
+
+      Meteor.call("getGigsByArtist", bandName, function (err, result) {
+        if(err) throw err;
+
+        // for (var i = 0; i < result.gigs.length; i++) {
+        //   var venue = result.gigs[i].venue;
+        //   if(venue)
+        //     L.marker([venue.latitude, venue.longitude]).addTo(template.map)
+        // }
+
+        var pointList = result.gigs.map(function(gig){
+          return new L.LatLng(gig.venue.latitude, gig.venue.longitude);
+        })
+
+        var firstpolyline = new L.Polyline(pointList, {
+            color: getRandomColor(),
+            weight: 3,
+            opacity: 0.5,
+            smoothFactor: 1
+        });
+
+        firstpolyline.addTo(template.map);
+      });
+
+    }
+  });
 }
 
 if (Meteor.isServer) {
-
   Meteor.startup(function () {
+    // code to run on server at startup
+  });
+
 
   Meteor.methods({
+    getGigsByArtist : function(artistName) {
+       return Artists.findOne({ _id : artistName });
+    }
 
-    getCommonShows: function () {
-      console.log("compute similarities");
-
-      // get common shows
-      var commonShows = Shows.aggregate([
+    /*getGigsByArtist :  function(artistName, callback) {
+      
+      var gigs = Gigs.aggregate([
           {
-              "$project": { // select fields
-                  "artists" : 1 ,
-                  "venue" : 1 ,
-                  "y" : { "$year": "$datetime" },
-                  "m" : { "$month": "$datetime" },
-                  "d" : { "$dayOfMonth": "$datetime" }
+            "$project": { // select fields
+                "artists" : 1,
+                "venue" : 1 ,
+                "datetime" : 1,
+                "y" : { "$year": "$datetime" },
+                "m" : { "$month": "$datetime" },
+                "d" : { "$dayOfMonth": "$datetime" }
+            }
+        }
+        , { $unwind: "$artists" } // développer array pour pouvoir en lire les valeurs
+        , { $match : { "artists.name" : artistName} }
+        , { $group: {
+            "_id": "$artists.name"
+            , "gigs": { $push: { venue : "$venue", year : "$y", month : "$m", day : "$d", datetime : "$datetime" } }
+            }
+        }
+        , { $sort: { // sort by day
+              "gigs.year": 1,
+              "gigs.month": 1,
+              "gigs.day": 1
               }
-          },
-          { $unwind: "$artists" } // développer array pour pouvoir en lire les valeurs
-          , {
-              "$group": { 
-                  "_id": { // group by day
-                      "year": "$y",
-                      "month": "$m",
-                      "day": "$d",
-                      "venue_id" : "$venue.id"
-                  }
-                  , artists : { $push: "$artists.name"  } // gather artists name
-                  , count: {
-                      "$sum": 1 // count the number of artists
-                  }
-              }
-          },
-          {
-              $sort: { // sort by day
-                  "_id.year": 1,
-                  "_id.month": 1,
-                  "_id.day": 1
-              }
-          }
+        }
       ]);
 
-      // console.log( commonShows );
-      return commonShows
-    }
+      return gigs[0];
+  }*/
   });
-})
-
-
-  //    // common shows
-  
-
-}
-
-
-
-
-function pairwise(list) {
-  if (list.length < 2) { return []; }
-  var first = list[0],
-      rest  = list.slice(1),
-      pairs = rest.map(function (x) { return [first, x]; });
-  return pairs.concat(pairwise(rest));
 }
