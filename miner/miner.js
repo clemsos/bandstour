@@ -9,8 +9,8 @@ client.connect(url, function(err, db) {
   // console.log(db);
 
   var col = db.collection('selectedArtists');
-  var newcol = db.collection('minedArtists')
-
+  var newcol = db.collection('minedArtists');
+  var deltaEntreDates = 10;
     var artistList = [];
     col.find({}, {_id:1}).toArray(function(err, data){
         if(err) throw err;
@@ -23,6 +23,7 @@ client.connect(url, function(err, db) {
 
             col.findOne({ _id : artistList[j]},function(err,artist){  
                 if(err) throw err ;
+                if (artist.gigs.length <= 2) return ;
                 //console.log(artistList[j]);
                var totalConcerts = artist.gigs.length; //nombre total de concerts
                var totalKm = 0; //distance totale parcourue 
@@ -55,36 +56,95 @@ client.connect(url, function(err, db) {
                     console.log(sortedGigs.length);
                    console.log(moment.duration(timeTotour).asYears());
                    var frequencyOfTheGigs = (sortedGigs.length)/moment.duration(timeTotour).asYears();
-                   console.log("fredgigs",frequencyOfTheGigs);
+                   console.log("frequencyOfTheGigs",frequencyOfTheGigs);
                 //Calcul de la durée moyenne entre concerts
                 
-                    console.log("gig length", artist.gigs.length); 
-                    var sumTotalToursTime = 0;
+                    console.log("amount of gigs", artist.gigs.length); 
+                   
+//BOUCLE DE COMPTAGE DES DATES
+
+                    var sumTotalDatatime = 0;
+                    var sumToursTimeON = 0;
+                    var sumToursTimeOFF = 0;
+                    var tourDutyCycle = 0;
                     for (var m = 0; m <= artist.gigs.length - 1; m++) {
                         
                     
-                 console.log("temps d'ici la prochaine date",moment.duration(artist.gigs[m].timeToNextGig).asDays());
-                        sumTotalToursTime += parseFloat(moment.duration(artist.gigs[m].timeToNextGig).asDays()) ; 
-                    
-                    var meanTimeTonextGig = parseFloat((sumTotalToursTime)/(artist.gigs.length));
-                    };
-                  console.log("sumTotalToursTime",sumTotalToursTime);
+                       // console.log("temps d'ici la prochaine date",moment.duration(artist.gigs[m].timeToNextGig).asDays());
+                        
+                        artist.gigs[m].tourInProgress = 0;
+                        sumTotalDatatime += parseFloat(moment.duration(artist.gigs[m].timeToNextGig).asDays()) ; 
+                        var meanTimeTonextGig = parseFloat((sumTotalDatatime)/(artist.gigs.length));
+                        
+                        //Detection de tournées
+                        if (moment.duration(artist.gigs[m].timeToNextGig).asDays() <= deltaEntreDates )// 10 jours  au plus entre deux dates et on considère que ce n'est plus une même tournée.
+                            { 
+                                if( m <= artist.gigs.length -2 ){ 
+                                    if (moment.duration(artist.gigs[m+1].timeToNextGig).asDays() <= deltaEntreDates ) {
+                            sumToursTimeON += parseFloat(moment.duration(artist.gigs[m].timeToNextGig).asDays());
+                             artist.gigs[m].tourInProgress = 1; 
+                                    }
+                                      
+                         }
+                                                  }
+                            else  {
+                                sumToursTimeOFF += parseFloat(moment.duration(artist.gigs[m].timeToNextGig).asDays()); 
+                                artist.gigs[m].tourInProgress = 0;
+                         }
+                             ;
+                            };
+
+                  console.log("sumTotalDatatime",sumTotalDatatime,"jours");
+                  console.log("sumToursTimeON",sumToursTimeON,"jours");
+                  console.log("sumToursTimeOFF",sumToursTimeOFF,"jours");
+
+                //TOUR DUTY CYCLE
+                  console.log("ratio", sumToursTimeON / sumTotalDatatime * 100, "%" )
                   console.log("meanTimeTonextGig",meanTimeTonextGig, "jours");
-                  console.log("echo",moment.duration(meanTimeTonextGig).asDays());
+                  //console.log("meanTimeTonextGig",moment.duration(meanTimeTonextGig).asDays());
+
+ // Comptage du nombre de tournees et de leurs durees
+                    var tourCount = 0;
+                    var tourLength = [];
+                    var tourDates = [];
+                    var p = 0;
+                    var meanTourLength = 0;
+                    tourLength[0]=0;
+                    for (var m = 0; m <= artist.gigs.length - 2; m++) {
 
 
-                  //console.log(sortedGigs[0]);
-                   //console.log(sortedGigs[sortedGigs.length-1]);
-                  //  moment(sortedGigs.datetime).sort(){
-                //gigmindate = gigdate.datetime[0];
-                //gigmaxdate = gigdate.datetime[k];
-                //  console.log(gigmindate)
-                //  console.log(gigmaxdate)    
+                        if  (artist.gigs[m].tourInProgress == 0 && artist.gigs[m+1].tourInProgress == 1) {
+                            tourCount += 1;
+                            tourLength[p] = 1;
+                            var tournee = {};
+                            tournee.dates =[];
+                            console.log(artist.gigs[m+1].datetime);
+                            tournee.dates.push (artist.gigs[m+1].datetime) ;
 
-                 //   return ;
-                 //  return  (gigmindate, gigmaxdate, new Date(gigmindate).getTime() - new Date(gigmaxdate).getTime()); 
-              //} 
-                    
+                        } else { 
+                            if (artist.gigs[m].tourInProgress == 0 && artist.gigs[m+1].tourInProgress == 0) {}
+                             else { 
+                                if (artist.gigs[m].tourInProgress == 1 && artist.gigs[m+1].tourInProgress == 0){
+                                    tourLength[p] += 1;
+                                    tourDates[tourCount].push (tournee);
+                                    console.log("tournee",tournee);
+                                    console.log("tourCount",tourCount);
+                                    console.log("tourDates",tourDates);
+
+                                    console.log("détecté une tournée de", tourLength[p],"dates");
+                                    p +=1;
+                                } else { if (artist.gigs[m].tourInProgress == 1 && artist.gigs[m+1].tourInProgress == 1){
+                                    tourLength[p] += 1;
+                                 tournee.dates.push (artist.gigs[m+1].datetime) ;
+                                } else throw "Y a un bug";
+                            }
+
+                             }
+                         }    
+                
+                     }
+
+
 
            // newcol.insert({_id : artistList [j], gigs : updatedGigs });
 
