@@ -25,7 +25,6 @@ col.aggregate([
         { 
             $group: {
             _id: "$artists.name",
-           
             }
         },{
         $sort: {"_id" : 1}

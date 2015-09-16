@@ -13,11 +13,10 @@ client.connect(url, function(err, db) {
     var selectedGigsCollection = db.collection('selectedGigs');
     var venuesCollection = db.collection('venues');
 
-    //storeAllVenues(gigsCollection, "venues" ,function(){
-
-    //db.close();})
-    sampleGigs(0, db, gigsCollection, venuesCollection, function (){
-        db.close();
+    storeAllVenues(gigsCollection, "venues" ,function(){
+        sampleGigs(0, db, gigsCollection, venuesCollection, function (){
+            db.close();
+        });
     });
 
     // getGigsByArtist("Terror", selectedGigsCollection, function(gigs){
