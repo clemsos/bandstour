@@ -111,13 +111,12 @@ client.connect(url, function(err, db) {
                     var meanTourLength = 0;
                     tourLength[0]=0;
                     for (var m = 0; m <= artist.gigs.length - 2; m++) {
-
-
+                            var tournee = {};
+                            tournee.dates =[];
                         if  (artist.gigs[m].tourInProgress == 0 && artist.gigs[m+1].tourInProgress == 1) {
                             tourCount += 1;
                             tourLength[p] = 1;
-                            var tournee = {};
-                            tournee.dates =[];
+                            tournee.dates[0] = 0;
                             console.log(artist.gigs[m+1].datetime);
                             tournee.dates.push (artist.gigs[m+1].datetime) ;
 
@@ -126,7 +125,8 @@ client.connect(url, function(err, db) {
                              else { 
                                 if (artist.gigs[m].tourInProgress == 1 && artist.gigs[m+1].tourInProgress == 0){
                                     tourLength[p] += 1;
-                                    tourDates[tourCount].push (tournee);
+                                    tourDates.push (tournee);
+                                    tout=rnee
                                     console.log("tournee",tournee);
                                     console.log("tourCount",tourCount);
                                     console.log("tourDates",tourDates);
@@ -135,6 +135,9 @@ client.connect(url, function(err, db) {
                                     p +=1;
                                 } else { if (artist.gigs[m].tourInProgress == 1 && artist.gigs[m+1].tourInProgress == 1){
                                     tourLength[p] += 1;
+                                    console.log ("artist.gigs[m+1].datetime", artist.gigs[m+1].datetime);
+                                    console.log("tournee",tournee);
+                                    console.log ("tournee.dates", tournee.dates)
                                  tournee.dates.push (artist.gigs[m+1].datetime) ;
                                 } else throw "Y a un bug";
                             }
