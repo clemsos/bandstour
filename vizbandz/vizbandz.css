@@ -1,1 +1,4 @@
-/* CSS declarations go here */
+#map { 
+    height: 480px;
+    border : 1px solid #CCC;
+}

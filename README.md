@@ -16,4 +16,4 @@ To link the Mongo with Meteor:
 	start Mongo server: ```mongod```  
 	use bandstour db: ```mongo bandstour```  
 	link Meteor and Mongo: ```export MONGO_URL=mongodb://localhost:27017/bandstour```, then start Meteor: ```meteor```  
-  or use: ```meteor --settings conf.js```
+  or use: ```meteor --settings conf.json```

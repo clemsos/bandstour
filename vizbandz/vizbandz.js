@@ -1,4 +1,4 @@
-// Gigs = new Mongo.Collection("selectedGigs");
+ // Gigs = new Mongo.Collection("selectedGigs");
 Artists = new Mongo.Collection("selectedArtists");
 
 if (Meteor.isClient) {
@@ -11,12 +11,14 @@ if (Meteor.isClient) {
     Template.map.rendered = function() {
         L.Icon.Default.imagePath = 'packages/bevanhunt_leaflet/images';
 
-        var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-        var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 16, attribution: osmAttrib});
+        // var url = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var url = 'http://tile.stamen.com/watercolor/{z}/{x}/{y}.png';
+        var attrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+        var layer = new L.TileLayer(url, {minZoom: 1, maxZoom: 16, attribution: attrib});
 
         var map = L.map('map').setView([51.505, -0.09], 13);
-        map.addLayer(osm);
+        map.addLayer(layer);
+
         this.map = map;
     }
 
@@ -122,7 +124,6 @@ if (Meteor.isServer) {
                             }
                 }
             ]);
-
             return gigs[0];
         }*/
     });
