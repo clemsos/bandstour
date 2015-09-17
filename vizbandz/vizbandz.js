@@ -12,7 +12,7 @@ if (Meteor.isClient) {
         L.Icon.Default.imagePath = 'packages/bevanhunt_leaflet/images';
 
         // var url = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        var url = 'http://tile.stamen.com/watercolor/{z}/{x}/{y}.png';
+        var url = 'http://tile.stamen.com/toner/{z}/{x}/{y}.png';
         var attrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
         var layer = new L.TileLayer(url, {minZoom: 1, maxZoom: 16, attribution: attrib});
 
