@@ -36,9 +36,10 @@ client.connect(url, function(err, db) {
                     var nextGig = artist.gigs[i+1];
                     
                     // Calcul des distances entres gigs et de la distance totale parcourue
-                    var km = getKmFromLatLong(artist.gigs[i].venue.latitude, artist.gigs[i].venue.longitude, nextGig.venue.latitude,nextGig.venue.longitude ) ;
-                    totalKm += km; 
-                    artist.gigs[i].distanceToNextGig = km;           
+                    // FAIT DANS LES LOOPS DE DATES
+                    //var km = getKmFromLatLong(artist.gigs[i].venue.latitude, artist.gigs[i].venue.longitude, nextGig.venue.latitude,nextGig.venue.longitude ) ;
+                    //totalKm += km; 
+                    //artist.gigs[i].distanceToNextGig = km;           
 
                     // Calcul des temps entres gigs et du temps total de tournées
                     var timeToNextGig = moment(nextGig.datetime).diff(moment(artist.gigs[i].datetime));
@@ -82,11 +83,12 @@ client.connect(url, function(err, db) {
                     if (artist.gigs[i].tourInProgress == 0){ //date unique
                         datesUniques.dates.push(artist.gigs[i].datetime);
                         datesUniques.distances.push(km);
+                        totalKm += km;
                     }
                     else if (artist.gigs[i].tourInProgress == 1){//en tournée
                         tournee.dates.push(artist.gigs[i].datetime);
                         tournee.distances.push(km);
-
+                        totalKm += km;
                         if( artist.gigs[i].tourLastDate || i == artist.gigs.length -1 ){
                             tournee.nbDates = tournee.dates.length;
                             for (var k = tournee.distances.length  ; k >=     0; k--) {
@@ -119,6 +121,7 @@ client.connect(url, function(err, db) {
                         artist.gigs.length
                     );
                 }
+
 
                 console.log('nbDatesUniques:', datesUniques.length);
                 console.log('datesUniques:', datesUniques);
