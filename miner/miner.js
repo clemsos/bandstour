@@ -7,9 +7,10 @@ client.connect(url, function(err, db) {
     console.log('Connected correctly to server\n\n\n');
     // console.log(db);
 
-    var col = db.collection('selectedArtists'),
-        newcol = db.collection('minedArtists'),
-        deltaEntreDates = 10,
+    var col = db.collection('selectedArtists');
+        newcol = db.collection('minedArtists');
+        deltaEntreDates = 10;
+        distanceavion = 1500;
         artistList = [];
 
     col.find({}, {_id:1}).toArray(function(err, data){
@@ -21,6 +22,7 @@ client.connect(url, function(err, db) {
         for (var j = artistList.length - 1; j >= 0; j--){
             col.findOne({ _id : artistList[j] }, function(err,artist){  
                 if(err) throw err;
+
                 if (artist.gigs.length <= 2) return;
 
                 console.log('//////////////////////////////////////////');
@@ -68,23 +70,37 @@ client.connect(url, function(err, db) {
                 var tournees = [];                
                 var tournee = {};
                 tournee.dates = [];
+                tournee.distances = [];
                 tournee.distance = 0;
                 var datesUniques = [];
+                datesUniques.dates = [];
+                datesUniques.distances = [];
                 for (var i = 0; i <= artist.gigs.length - 1; i++) {
+                    var km = null;
+                    if (i == 0 || i >= artist.gigs.length - 1) {}
+                    else { km = getKmFromLatLong(artist.gigs[i].venue.latitude, artist.gigs[i].venue.longitude, artist.gigs[i+1].venue.latitude, artist.gigs[i+1].venue.longitude ) ;}
                     if (artist.gigs[i].tourInProgress == 0){ //date unique
-                        datesUniques.push(artist.gigs[i].datetime);
+                        datesUniques.dates.push(artist.gigs[i].datetime);
+                        datesUniques.distances.push(km);
                     }
                     else if (artist.gigs[i].tourInProgress == 1){//en tournée
                         tournee.dates.push(artist.gigs[i].datetime);
+                        tournee.distances.push(km);
 
                         if( artist.gigs[i].tourLastDate || i == artist.gigs.length -1 ){
                             tournee.nbDates = tournee.dates.length;
-
+                            for (var k = tournee.distances.length  ; k >=     0; k--) {
+                              if (tournee.distances[k] != null) {tournee.distance += tournee.distances[k]}
+                                else {};
+                                                   };
                             tournees.push( clone(tournee) );
 
                             tournee = {};
                             tournee.dates = [];
                             tournee.distance = 0;
+                            tournee.distances = [];
+
+
                         }
                     }
                 }
@@ -150,11 +166,11 @@ client.connect(url, function(err, db) {
 
                 //TOUR DUTY CYCLE
                 var tourDutyCycle = timeOnTour / totalTime;
-                console.log('timeOnTour / totalTime:', tourDutyCycle * 100, '%' );
+                console.log('tourDutyCycle = timeOnTour / totalTime:', tourDutyCycle * 100, '%' );
 
                 // calcul du nombre moyen de dates / année
-                var meanOfGigsByYear = artist.gigs.length / moment.duration(totalTime).asYears();
-                console.log('meanOfGigsByYear:', meanOfGigsByYear);
+                var meanOfGigsPerYear = artist.gigs.length / moment.duration(totalTime).asYears();
+                console.log('meanOfGigsByYear:', meanOfGigsPerYear);
 
                 // calcul du délais moyen entre 2 concerts
                 console.log('meanDelayBetweenGigs:', moment.duration(totalTime).asDays()/ artist.gigs.length, "days");
@@ -165,8 +181,10 @@ client.connect(url, function(err, db) {
                 console.log('\n\n');
             });
         };
+    console.log("////TRAITEMENT FINI - HOURRAH!////")
     });
-    // db.close();
+    //db.close();
+    
 });
 
 function getKmFromLatLong(lat1,lon1,lat2,lon2){
@@ -189,3 +207,6 @@ function clone(obj) {
     }
     return copy;
 }
+
+
+
