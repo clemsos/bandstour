@@ -72,22 +72,29 @@ client.connect(url, function(err, db) {
                 var tournee = {};
                 tournee.dates = [];
                 tournee.distances = [];
+                tournee.venues =[];
                 tournee.distance = 0;
                 var datesUniques = [];
                 datesUniques.dates = [];
                 datesUniques.distances = [];
+                datesUniques.venues = [];
                 for (var i = 0; i <= artist.gigs.length - 1; i++) {
                     var km = null;
-                    if (i == 0 || i >= artist.gigs.length - 1) {}
-                    else { km = getKmFromLatLong(artist.gigs[i].venue.latitude, artist.gigs[i].venue.longitude, artist.gigs[i+1].venue.latitude, artist.gigs[i+1].venue.longitude ) ;}
+                    if (i == 0 || i >= artist.gigs.length) {}
+                    else { km = getKmFromLatLong(artist.gigs[i-1].venue.latitude, artist.gigs[i-1].venue.longitude, artist.gigs[i].venue.latitude, artist.gigs[i].venue.longitude ) ;}
                     if (artist.gigs[i].tourInProgress == 0){ //date unique
+                        //stocke la date
                         datesUniques.dates.push(artist.gigs[i].datetime);
+                        //stocke la distance A PARCOURIR jusqu'à la prochaine date
                         datesUniques.distances.push(km);
+                        //stocke les salles
+                        datesUniques.venues.push(artist.gigs[i].venue);
                         totalKm += km;
                     }
                     else if (artist.gigs[i].tourInProgress == 1){//en tournée
                         tournee.dates.push(artist.gigs[i].datetime);
                         tournee.distances.push(km);
+                        tournee.venues.push(artist.gigs[i].venue);
                         totalKm += km;
                         if( artist.gigs[i].tourLastDate || i == artist.gigs.length -1 ){
                             tournee.nbDates = tournee.dates.length;
@@ -101,6 +108,7 @@ client.connect(url, function(err, db) {
                             tournee.dates = [];
                             tournee.distance = 0;
                             tournee.distances = [];
+                            tournee.venues = [];
 
 
                         }
