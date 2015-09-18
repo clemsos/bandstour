@@ -179,6 +179,9 @@ client.connect(url, function(err, db) {
                 console.log('meanDelayBetweenGigs:', moment.duration(totalTime).asDays()/ artist.gigs.length, "days");
 
                 console.log('totalKm: '+ totalKm);
+                var co2Spent = totalKm / 3 ;
+                console.log('co2 depense par membre du groupe (en kg) /premiere approx:', co2Spent);
+                //source: http://www.sightline.org/research/graphics/climate-co2bymode/
 
                 // newcol.insert({_id : artistList [j], gigs : updatedGigs });
                 console.log('\n\n');
