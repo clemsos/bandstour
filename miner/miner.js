@@ -85,11 +85,11 @@ client.connect(url, function(err, db) {
                     if (artist.gigs[i].tourInProgress == 0){ //date unique
                         //stocke la date
                         datesUniques.dates.push(artist.gigs[i].datetime);
-                        //stocke la distance A PARCOURIR jusqu'à la prochaine date
+                        //stocke la distance parcourue la prochaine date
                         datesUniques.distances.push(km);
                         //stocke les salles
                         datesUniques.venues.push(artist.gigs[i].venue);
-                        totalKm += km;
+                        totalKm += km; 
                     }
                     else if (artist.gigs[i].tourInProgress == 1){//en tournée
                         tournee.dates.push(artist.gigs[i].datetime);
