@@ -20,10 +20,10 @@ if (Meteor.isClient) {
         var map = L.map('map').setView([51.505, -0.09], 13);
         map.addLayer(layer);
         this.map = map;
-        Meteor.call(getVenuesToBeShown,function(err, Venues){
-        console.log(Venues.length);
-        for (var i = 0; i < Venues.length; i++) {
-            var point = Venues[i];
+        Meteor.call(getVenuesToBeShown, function(err, salle){
+        console.log(salle.length);
+        for (var i = 0; i < salle.length; i++) {
+            var point = salle[i];
             console.log(point);
             var circle = L.circle( [point.latitude, point.longitude], point.count, {
                 color: 'red',
@@ -113,7 +113,7 @@ if (Meteor.isServer) {
         }
 
         getVenuesToBeShown : function() {
-            return Venues.findOne({_id : 1 });
+            return Venues.find({_id : 1 });
         }
 
         /*getGigsByArtist : function(artistName, callback) {
