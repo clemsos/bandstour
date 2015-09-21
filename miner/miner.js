@@ -74,6 +74,7 @@ client.connect(url, function(err, db) {
                         }
                     }
                     else  {
+
                         // more than 2 days to next date
                         if(!tourInProgress ){ // single gig
                             var singleGig = {};
@@ -94,10 +95,10 @@ client.connect(url, function(err, db) {
                             tourInProgress = false;
                         }
 
-                        // off tour 
-                        // if( i == artist.gigs.length - 2) tourInProgress = false;
-                        timeOffTour += gig.timeToNextGig;
                     }
+
+                    // off tour 
+                    timeOffTour += gig.timeToNextGig;
 
                     // parse last date
                     if(i==artist.gigs.length-2) {
@@ -174,7 +175,7 @@ client.connect(url, function(err, db) {
                 artist.co2Spent = co2Spent;
 
                 console.log(artist.name, co2Spent);
-                newcol.insert(artist);
+                // newcol.insert(artist);
 
             });
         };

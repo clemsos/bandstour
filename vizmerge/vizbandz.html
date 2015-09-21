@@ -1,0 +1,24 @@
+<head>
+  <title>Bandstour</title>
+</head>
+
+<body>
+  <h1>Welcome to Bandstour!</h1>
+
+  {{> map}}
+</body>
+
+<template name="map">
+  <form action="">
+    <input type="text" name="bandName">
+    <button type="submit">Lookup</button>
+  </form>
+  <form action="">
+    <input type="text" name="MinGigCountperVenue">
+    <button type="submit">MinGigCountperVenue</button>
+  </form>
+  <div id="map">
+   <svg class="chart"></svg>
+    <script src="d3.v3.min.js"></script>   
+  </div>
+</template>
