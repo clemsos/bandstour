@@ -20,7 +20,14 @@ if (Meteor.isClient) {
         var map = L.map('map').setView([51.505, -0.09], 13);
         map.addLayer(layer);
         this.map = map;
+         var salleArray = Venues.find().fetch();
+        console.log("venues",salleArray.length);
+            /*
+        
+        var salle =[];
         Meteor.call("getVenuesToBeShown", function (err, salle){
+            if(err) throw err;
+            salle.fetch();
         console.log(salle.length);
         for (var i = 0; i < salle.length; i++) {
             var point = salle[i];
@@ -30,10 +37,11 @@ if (Meteor.isClient) {
                 fillColor: '#f03',
                 fillOpacity: 0.5
                 }).addTo(template.map);
-                
                 }
             
             })
+                */
+                
         
     }
 
@@ -112,10 +120,9 @@ if (Meteor.isServer) {
              return Artists.findOne({ _id : artistName });
         }
 
-        getVenuesToBeShown : function() {
-            return Venues.find().fetch();
-        }
-
+      /*  getVenuesToBeShown : function() {
+                        return Venues.find();
+        }*/
         /*getGigsByArtist : function(artistName, callback) {
             
             var gigs = Gigs.aggregate([
