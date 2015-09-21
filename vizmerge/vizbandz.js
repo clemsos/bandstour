@@ -1,3 +1,13 @@
+var arrowOptions = {
+    distanceUnit: 'km',
+    isWindDegree: true,
+    stretchFactor: 1,
+    popupContent: function(data) { 
+        return "<h3>" + data.title + "</h3>"; 
+        },
+    arrowheadLength: 0.8
+};
+
  // Gigs = new Mongo.Collection("selectedGigs");
 Artists = new Mongo.Collection("selectedArtists");
 Venues = new Mongo.Collection("selectedVenues");
@@ -66,8 +76,8 @@ if (Meteor.isClient) {
                 }
                 return color;
             }
-
-            function getKmFromLatLong(lat1,lon1,lat2,lon2){
+ //MOVED TO ARTISTS
+       /*     function getKmFromLatLong(lat1,lon1,lat2,lon2){
                 var R = 6371; // Radius of the earth in km
                 var dLat = (lat2 - lat1) * Math.PI / 180;   // deg2rad below
                 var dLon = (lon2 - lon1) * Math.PI / 180;
@@ -77,7 +87,7 @@ if (Meteor.isClient) {
                     (1 - Math.cos(dLon))/2;
 
                 return R * 2 * Math.asin(Math.sqrt(a));
-            }
+            }*/
                 
 
             Meteor.call("getGigsByArtist", bandName, function (err, result) {
@@ -88,21 +98,30 @@ if (Meteor.isClient) {
                 //   if(venue)
                 //       L.marker([venue.latitude, venue.longitude]).addTo(template.map)
                 // }
-                var km = 0;
+                //var km = 0;
                 var pointList = result.gigs.map(function(gig, i){
                     var nextGig = result.gigs[i+1]; 
-                    if (i < result.gigs.length-1) km += getKmFromLatLong(gig.venue.latitude, gig.venue.longitude, nextGig.venue.latitude,nextGig.venue.longitude );
+                  //  if (i < result.gigs.length-1) km += getKmFromLatLong(gig.venue.latitude, gig.venue.longitude, nextGig.venue.latitude,nextGig.venue.longitude );
                    // console.log(km);
                     return new L.LatLng(gig.venue.latitude, gig.venue.longitude);
                 });
-
+        for (var i = 0; i < Things.length; i++) {
+            Things[i]
+        };
+                var arrowData = {
+                latlng: L.latLng(46.95, 7.4),
+                degree: 77,
+                distance: 10,
+                title: "Demo"
+                    };
+     
                 var firstpolyline = new L.Polyline(pointList, {
                     color: getRandomColor(),
-                    weight: 4,
+                    weight: 10,
                     opacity: 0.5,
                     smoothFactor: 1
                 });
-                console.log(pointList);
+                console.log(pointList[0], pointList[1])
                 firstpolyline.addTo(template.map)/*.bindPopup(pointList)*/;
             });
         }
