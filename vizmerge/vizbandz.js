@@ -31,13 +31,14 @@ if (Meteor.isClient) {
         for (var i = 0; i < salle.length; i++) {
             var point = salle[i];
            // console.log(point);
-            var circle = L.circle( [point.latitude, point.longitude], point.count, {
-                color: 'red',
-                fillColor: '#f03',
-                fillOpacity: 0.5
-                }).addTo(map);
-                }
-            
+            if (point.count > 10) {
+                var circle = L.circle( [point.latitude, point.longitude], point.count, {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.5
+                    }).addTo(map);
+                    }
+                };
             })
                 
                 
