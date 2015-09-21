@@ -98,12 +98,12 @@ if (Meteor.isClient) {
 
                 var firstpolyline = new L.Polyline(pointList, {
                     color: getRandomColor(),
-                    weight: 3,
+                    weight: 4,
                     opacity: 0.5,
                     smoothFactor: 1
                 });
-
-                firstpolyline.addTo(template.map);
+                console.log(pointList);
+                firstpolyline.addTo(template.map)/*.bindPopup(pointList)*/;
             });
         }
     });
@@ -147,7 +147,7 @@ if (Meteor.isServer) {
                             }
                 }
             ]);
-            return gigs[0];
+            return gigs[0]; 
         }*/
     });
 
