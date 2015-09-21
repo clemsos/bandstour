@@ -20,7 +20,7 @@ if (Meteor.isClient) {
         var map = L.map('map').setView([51.505, -0.09], 13);
         map.addLayer(layer);
         this.map = map;
-        Meteor.call(getVenuesToBeShown, function(err, salle){
+        Meteor.call("getVenuesToBeShown", function (err, salle){
         console.log(salle.length);
         for (var i = 0; i < salle.length; i++) {
             var point = salle[i];
@@ -113,7 +113,7 @@ if (Meteor.isServer) {
         }
 
         getVenuesToBeShown : function() {
-            return Venues.find({_id : 1 });
+            return Venues.find().fetch();
         }
 
         /*getGigsByArtist : function(artistName, callback) {
