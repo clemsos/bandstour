@@ -20,27 +20,26 @@ if (Meteor.isClient) {
         var map = L.map('map').setView([51.505, -0.09], 13);
         map.addLayer(layer);
         this.map = map;
-         var salleArray = Venues.find().fetch();
+        /* var salleArray = Venues.find().fetch();
         console.log("venues",salleArray.length);
-            /*
+          */  
         
         var salle =[];
         Meteor.call("getVenuesToBeShown", function (err, salle){
             if(err) throw err;
-            salle.fetch();
-        console.log(salle.length);
+        console.log("salle loop",salle.length);
         for (var i = 0; i < salle.length; i++) {
             var point = salle[i];
-            console.log(point);
+           // console.log(point);
             var circle = L.circle( [point.latitude, point.longitude], point.count, {
                 color: 'red',
                 fillColor: '#f03',
                 fillOpacity: 0.5
-                }).addTo(template.map);
+                }).addTo(map);
                 }
             
             })
-                */
+                
                 
         
     }
@@ -53,8 +52,8 @@ if (Meteor.isClient) {
             var bandName = event.target.bandName.value;
 
             var self = this;
-            console.log(template);
-            console.log(self);
+          //  console.log(template);
+           // console.log(self);
 
             if( !bandName ) return;
 
@@ -92,7 +91,7 @@ if (Meteor.isClient) {
                 var pointList = result.gigs.map(function(gig, i){
                     var nextGig = result.gigs[i+1]; 
                     if (i < result.gigs.length-1) km += getKmFromLatLong(gig.venue.latitude, gig.venue.longitude, nextGig.venue.latitude,nextGig.venue.longitude );
-                    console.log(km);
+                   // console.log(km);
                     return new L.LatLng(gig.venue.latitude, gig.venue.longitude);
                 });
 
@@ -119,10 +118,7 @@ if (Meteor.isServer) {
         getGigsByArtist : function(artistName) {
              return Artists.findOne({ _id : artistName });
         }
-
-      /*  getVenuesToBeShown : function() {
-                        return Venues.find();
-        }*/
+        
         /*getGigsByArtist : function(artistName, callback) {
             
             var gigs = Gigs.aggregate([
@@ -153,4 +149,9 @@ if (Meteor.isServer) {
             return gigs[0];
         }*/
     });
+
+     Meteor.methods({ 
+        getVenuesToBeShown : function(callback) {
+                        return Venues.find().fetch();}})
+
 }
