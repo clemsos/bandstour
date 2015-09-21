@@ -1,5 +1,6 @@
  // Gigs = new Mongo.Collection("selectedGigs");
 Artists = new Mongo.Collection("selectedArtists");
+Venues = new Mongo.Collection("selectedVenues");
 
 if (Meteor.isClient) {
     Template.map.helpers({
@@ -19,6 +20,20 @@ if (Meteor.isClient) {
         var map = L.map('map').setView([51.505, -0.09], 13);
         map.addLayer(layer);
         this.map = map;
+        Meteor.call(getVenuesToBeShown,function(err, Venues){
+        console.log(Venues.length);
+        for (var i = 0; i < Venues.length; i++) {
+            var point = Venues[i];
+            console.log(point);
+            var circle = L.circle( [point.latitude, point.longitude], point.count, {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5
+                }).addTo(template.map);
+                
+                }
+            
+            })
         
     }
 
@@ -72,29 +87,7 @@ if (Meteor.isClient) {
                     console.log(km);
                     return new L.LatLng(gig.venue.latitude, gig.venue.longitude);
                 });
-            d3.json("http://localhost:3000/mapPoint.json",function(err, data){
-            console.log(data.length);
-            /*
-            
 
-            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-            var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-            var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 16, attribution: osmAttrib});   
-
-            map.addLayer(osm)
-*/
-            for (var i = 0; i < data.length; i++) {
-                var point = data[i];
-                console.log(point);
-                var circle = L.circle( [point.latitude, point.longitude], point.count, {
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.5
-                }).addTo(template.map);
-                
-            }
-            
-        })
                 var firstpolyline = new L.Polyline(pointList, {
                     color: getRandomColor(),
                     weight: 3,
@@ -117,6 +110,10 @@ if (Meteor.isServer) {
     Meteor.methods({
         getGigsByArtist : function(artistName) {
              return Artists.findOne({ _id : artistName });
+        }
+
+        getVenuesToBeShown : function() {
+            return Venues.findOne({_id : 1 });
         }
 
         /*getGigsByArtist : function(artistName, callback) {
