@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.count, rect {
+  fill: steelblue;
+}
+
+text {
+  fill: black;
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+#map { 
+    height: 480px;
+    border : 1px solid #CCC;
+}
+
+</style>
+<div id="map"></div>
+
+<svg class="chart"></svg>
+    <script src="d3.v3.min.js"></script>
+    <link rel="stylesheet" href="leaflet.css" />
+    <script src="leaflet.js"></script>
+
+    <script>
+        d3.json("../data/mapPoint.json",function(err, data){
+            console.log(data.length);
+            var map = L.map('map').setView([51.505, -0.09], 13);
+
+            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+            var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 16, attribution: osmAttrib});   
+
+            map.addLayer(osm)
+
+            for (var i = 0; i < data.length; i++) {
+                var point = data[i];
+                // console.log(point);
+                var circle = L.circle( [point.latitude, point.longitude], point.count, {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.5
+                }).addTo(map);
+                
+            }
+            
+        })
+
+        // var layer = L.mapbox.tileLayer('mapbox.streets');
+        //     layer.on('ready', function() {
+        //         console.log("map ready");
+        //       // the layer has been fully loaded now, and you can
+        //       // call .getTileJSON and investigate its properties
+        //     });
+
+        //     layer.on('error', function(err) {
+        //       // Handle error
+        //       console.log("Map error");
+        //     });
+
+
+    </script>
