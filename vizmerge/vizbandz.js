@@ -31,7 +31,7 @@ if (Meteor.isClient) {
         for (var i = 0; i < salle.length; i++) {
             var point = salle[i];
            // console.log(point);
-            if (point.count > 10) {
+            if (point.count > 5) {
                 var circle = L.circle( [point.latitude, point.longitude], point.count, {
                     color: 'red',
                     fillColor: '#f03',
@@ -51,7 +51,7 @@ if (Meteor.isClient) {
 
             // / Get value from form element
             var bandName = event.target.bandName.value;
-
+//            var MinGigCountperVenue = event.target.MinGigCountperVenue.value;
             var self = this;
           //  console.log(template);
            // console.log(self);
@@ -153,6 +153,7 @@ if (Meteor.isServer) {
 
      Meteor.methods({ 
         getVenuesToBeShown : function(callback) {
-                        return Venues.find().fetch();}})
+                        return Venues.find().fetch();}
+            })
 
 }
