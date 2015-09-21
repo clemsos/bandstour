@@ -36,7 +36,7 @@ if (Meteor.isClient) {
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.5
-                    }).addTo(map);
+                    }).addTo(map).bindPopup(point.name);
                     }
                 };
             })
@@ -51,7 +51,7 @@ if (Meteor.isClient) {
 
             // / Get value from form element
             var bandName = event.target.bandName.value;
-//            var MinGigCountperVenue = event.target.MinGigCountperVenue.value;
+//             var MinGigCountperVenue = event.target.MinGigCountperVenue.value;
             var self = this;
           //  console.log(template);
            // console.log(self);
