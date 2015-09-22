@@ -61,15 +61,19 @@ client.connect(url, function(err, db) {
                             tour = {};
                             tour.dates = [];
                             tour.distances = [];
+                            tour.venues=[];
 
                             timeOnTour += gig.timeToNextGig;
                             tour.dates.push(gig.datetime);
                             tour.distances.push(km);
+                            tour.venues.push(gig.venue);
+
                         } else {
                             // append to tour
                             timeOnTour += gig.timeToNextGig;
                             tour.dates.push(gig.datetime);
                             tour.distances.push(km);
+                            tour.venues.push(gig.venue);
                             tourInProgress = true;
                         }
                     }
@@ -78,14 +82,17 @@ client.connect(url, function(err, db) {
                         // more than 2 days to next date
                         if(!tourInProgress ){ // single gig
                             var singleGig = {};
+                            singleGig.venue=[];
                             singleGig.date = gig.datetime;
                             singleGig.distance = km;
+                            singleGig.venue.push(gig.venue);
                             singleGigs.push(singleGig);
                             tourInProgress = false;
                         }
                         else{ // last gig of the tour 
                             tour.dates.push(gig.datetime);
                             tour.distances.push(km);
+                            tour.venues.push(gig.venue);
                             // end of tour
 
                             tour.nbGigs = tour.dates.length; // number of gigs
@@ -105,6 +112,7 @@ client.connect(url, function(err, db) {
                         if(tourInProgress ){ // end the tour
                             tour.dates.push(nextGig.datetime);
                             tour.distances.push(undefined);
+                            tour.venues.push(gig.venue);
                             tour.nbGigs = tour.dates.length; // number of gigs
                             tour.distance = 0
                             for(var d in tour.distances) { tour.distance += tour.distances[d]; } // total distance
@@ -112,8 +120,10 @@ client.connect(url, function(err, db) {
                             tourInProgress = false;
                         } else { // single date 
                             var singleGig = {};
+                            singleGig.venue=[];
                             singleGig.date = nextGig.datetime;
                             singleGig.distance = undefined;
+                            singleGig.venue.push(gig.venue);
                             singleGigs.push(singleGig);
                             tourInProgress = false;
                         }
@@ -175,7 +185,7 @@ client.connect(url, function(err, db) {
                 artist.co2Spent = co2Spent;
 
                 console.log(artist.name, co2Spent);
-                // newcol.insert(artist);
+                newcol.insert(artist);
 
             });
         };
