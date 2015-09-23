@@ -5,11 +5,14 @@ var url = 'mongodb://localhost:27017/bandstour';
 // Use connect method to connect to the Server
 client.connect(url, function(err, db) {
     console.log('Connected correctly to server\n');
-    // console.log(db);
+
 
     // db
     var col = db.collection('selectedArtists')
         , newcol = db.collection('minedArtists');
+
+    // clean everything
+    newcol.drop()
 
     // const
     var  DELTA_BETWEEN_DATES = 10

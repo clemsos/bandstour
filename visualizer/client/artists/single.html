@@ -1,0 +1,36 @@
+<template name="artist">
+    
+    <h1>{{ artist.name }}</h1>
+
+        {{#each categories}}
+            {{ this }} {{ artist[this]}}
+        {{/each}}
+
+    {{> map}}
+
+    <h4>Tours</h4>
+    <ul>
+        {{#each artist.tours}}
+                {{this}}
+                <!-- {{> tour tour=this}} -->
+        {{/each}}
+    </ul>
+    <h4> singleGigs </h4>
+        <ul>
+            {{#each artist.singleGigs}}
+                {{> gig gig=this }}
+            {{/each}}
+        </ul>
+</template>
+
+<template name="tour">
+    <ul>
+        {{#each this.tour}}
+            {{> gig gig=this }}
+        {{/each}}
+    </ul>
+</template>
+
+<template name="gig">
+    <li>{{ this.gig.date }} - {{ this.gig.venue.city}}</li>
+</template>
