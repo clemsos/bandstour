@@ -1,13 +1,3 @@
-var arrowOptions = {
-    distanceUnit: 'km',
-    isWindDegree: true,
-    stretchFactor: 1,
-    popupContent: function(data) { 
-        return "<h3>" + data.title + "</h3>"; 
-        },
-    arrowheadLength: 0.8
-};
-
  // Gigs = new Mongo.Collection("selectedGigs");
 Artists = new Mongo.Collection("selectedArtists");
 Venues = new Mongo.Collection("selectedVenues");
@@ -104,16 +94,7 @@ if (Meteor.isClient) {
                   //  if (i < result.gigs.length-1) km += getKmFromLatLong(gig.venue.latitude, gig.venue.longitude, nextGig.venue.latitude,nextGig.venue.longitude );
                    // console.log(km);
                     return new L.LatLng(gig.venue.latitude, gig.venue.longitude);
-                });
-        for (var i = 0; i < Things.length; i++) {
-            Things[i]
-        };
-                var arrowData = {
-                latlng: L.latLng(46.95, 7.4),
-                degree: 77,
-                distance: 10,
-                title: "Demo"
-                    };
+                });         
      
                 var firstpolyline = new L.Polyline(pointList, {
                     color: getRandomColor(),
