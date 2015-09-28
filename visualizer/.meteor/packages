@@ -10,3 +10,6 @@ bevanhunt:leaflet
 d3js:d3
 iron:router
 sergeyt:typeahead
+momentjs:moment
+rcy:nouislider
+reactive-var
