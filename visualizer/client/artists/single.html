@@ -12,15 +12,15 @@
     <ul>
         {{#each artist.tours}}
                 {{this}}
-                <!-- {{> tour tour=this}} -->
         {{/each}}
     </ul>
+
     <h4> singleGigs </h4>
-        <ul>
-            {{#each artist.singleGigs}}
-                {{> gig gig=this }}
-            {{/each}}
-        </ul>
+    <ul>
+        {{#each artist.singleGigs}}
+            {{> gig gig=this }}
+        {{/each}}
+    </ul>
 </template>
 
 <template name="tour">

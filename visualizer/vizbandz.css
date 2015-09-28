@@ -1,4 +1,9 @@
-#map { 
-    height: 480px;
-    border : 1px solid #CCC;
+#map {
+  width: 960px;
+  height: 500px;
+  border : 1px solid #CCC;
+}
+
+svg {
+    position: relative.
 }

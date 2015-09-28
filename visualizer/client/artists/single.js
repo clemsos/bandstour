@@ -4,7 +4,6 @@ Template.artist.helpers({
     },
     artist : function() {
         var artist = Artists.findOne();
-        console.log(artist);
         return artist;
     },
 
