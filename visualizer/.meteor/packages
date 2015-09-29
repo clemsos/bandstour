@@ -21,3 +21,4 @@ meteorhacks:npm
 npm-container
 cosmos:browserify
 yauh:turfjs
+workman:x-editable-reactive-template

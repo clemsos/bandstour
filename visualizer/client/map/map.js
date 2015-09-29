@@ -20,7 +20,6 @@ Template.map.rendered = function( ) {
     Object.keys( venues ).forEach( function( id ) {
         var venue = venues[ id ];
 
-
         if ( !isValidCoordinate( venue.latitude, venue.longitude ) ) {
             console.log( venue, id );
             return;
@@ -152,7 +151,6 @@ Template.map.events( {
     'click #showVenues': function( e ) {
         e.preventDefault( );
         var artist = Artists.findOne( );
-
         // render 
     },
 

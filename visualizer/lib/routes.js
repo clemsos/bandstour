@@ -58,7 +58,7 @@ Router.route('/artists/:artistId/network', {
     },
     action: function () {
         if (!this.ready())  this.render("loading");
-        else this.render('network', { data : {"artistId" : this.params.artistId} });
+        else this.render('network', { data : {"networkId" : this.params.artistId} });
     }
 });
 
