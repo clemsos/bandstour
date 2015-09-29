@@ -15,12 +15,11 @@ Template.map.rendered = function( ) {
             return map
         }, {} );
 
-    // console.log(venues);
-
     // GeoJSON features 
     var features = [ ];
     Object.keys( venues ).forEach( function( id ) {
         var venue = venues[ id ];
+
 
         if ( !isValidCoordinate( venue.latitude, venue.longitude ) ) {
             console.log( venue, id );
@@ -97,8 +96,6 @@ Template.map.rendered = function( ) {
 
     function update( ) {
         var bounds = path.bounds( collection ),
-            // var bounds = boundingExtent(features),
-            // var bounds = map.getBounds();
             topLeft = bounds[ 0 ],
             bottomRight = bounds[ 1 ];
 
@@ -123,24 +120,7 @@ Template.map.rendered = function( ) {
         } );
     }
 
-    function boundingExtent( features ) {
-        var boundExtent = [
-            [ 0, 0 ],
-            [ 0, 0 ]
-        ];
-
-        for ( var x in features ) {
-            var thisBounds = d3.geo.bounds( features[ x ] );
-            boundExtent[ 0 ][ 0 ] = Math.min( thisBounds[ 0 ][ 0 ], boundExtent[ 0 ][ 0 ] );
-            boundExtent[ 0 ][ 1 ] = Math.min( thisBounds[ 0 ][ 1 ], boundExtent[ 0 ][ 1 ] );
-            boundExtent[ 1 ][ 0 ] = Math.max( thisBounds[ 1 ][ 0 ], boundExtent[ 1 ][ 0 ] );
-            boundExtent[ 1 ][ 1 ] = Math.max( thisBounds[ 1 ][ 1 ], boundExtent[ 1 ][ 1 ] );
-        }
-        return boundExtent;
-    }
-
     // Use Leaflet to implement a D3 geometric transformation.
-
     function projectPoint( x, y ) {
         var point = map.latLngToLayerPoint( new L.LatLng( x, y ) );
         this.stream.point( point.x, point.y );
@@ -173,29 +153,7 @@ Template.map.events( {
         e.preventDefault( );
         var artist = Artists.findOne( );
 
-        var venues = artist.gigs
-            .map( function( d ) {
-                return d.venue;
-            } )
-            .reduce( function( map, d ) {
-                map[ d.id ] = map[ d.id ] ||  d;
-                map[ d.id ].count = ( map[ d.id ].count || 0 ) + 1;
-                return map
-            } );
-
-        Object.keys( venues ).forEach( function( id ) {
-            var venue = venues[ id ];
-            if ( venue.count > Session.get( "minShowsPerVenue" ) ) {
-
-                // var circle = L.circle( [venue.latitude, venue.longitude], venue.count, {
-                //     color: 'red',
-                //     fillColor: '#f03',
-                //     fillOpacity: 0.5
-                //     })
-                // .addTo(map)
-                // .bindPopup(venue.name);
-            }
-        } )
+        // render 
     },
 
     'click showTours': function( e ) {

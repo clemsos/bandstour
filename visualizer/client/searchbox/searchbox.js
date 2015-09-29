@@ -1,8 +1,8 @@
-Template.menu.rendered = function() {
+Template.searchbox.rendered = function() {
     Meteor.typeahead.inject();
 };
 
-Template.menu.helpers({
+Template.searchbox.helpers({
     lookupArtists : function(query, sync, callback) {
         Meteor.call('search', query, {}, function(err, res) {
             if (err) {
@@ -14,7 +14,7 @@ Template.menu.helpers({
     }
 });
 
-Template.menu.events({
+Template.searchbox.events({
     'submit form': function (e, template) {
             e.preventDefault();
             var bandName = event.target.bandName.value;
