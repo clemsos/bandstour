@@ -1,3 +1,7 @@
+Meteor.publish('comments', function() {
+    return Comments.find();
+});
+
 Meteor.publish('topArtists', function(count, category) {
     console.log(count, category);
     var acceptedTypes = ["totalKm","meanOfGigsPerYear", "totalGigs", "meanDelayBetweenGigs", "co2Spent"]

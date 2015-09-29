@@ -7,7 +7,7 @@ Template.network.created = function(){
 
 Template.network.rendered = function () {
     var self = this;
-    var artistId = this.data.artistId;
+    var artistId = this.data.networkId;
     console.log(this.data);
 
     // create graph// network.destroy();
@@ -18,7 +18,7 @@ Template.network.rendered = function () {
     var artist  = Artists.findOne();
     
     // nodes are venues
-    var nodes = artist.gigs
+    var venues = artist.gigs
         .map(function (e) {
             return e.venue;
         })
@@ -28,32 +28,44 @@ Template.network.rendered = function () {
             return map
         }, {});
 
-    // edges are
-    for (var i = 0; i < tours.length; i++) {
-        var tour = tours[i];
-         
+    var nodes = [ ];
+    Object.keys( venues ).forEach( function( id ) {
+        venues[ id ].group = venues[ id ].country;
+        var node = {
+            data : venues[ id ],
+            group : "nodes"
+        }
+        nodes.push(node);
+    })
+
+    // calculate edges
+    var edges = [];
+    for (var i = 0; i < artist.tours.length; i++) {
+        var tour = artist.tours[i];
+         tour.venues.forEach(function (d, j){
+            if( j < tour.venues.length - 1) {
+                var edge = {
+                    group : "edges", 
+                    data : {
+                         'source' : d.id, 
+                         'target' : tour.venues[j+1].id, 
+                         'group' : i 
+                    }
+                }
+                edges.push( edge);
+            }
+         }) 
     }
-    // var edges = artist.tours
-    //     .map(function (e) {
-    //         return e.venue;
-    //     })
-    //     .reduce( function(map, d , i, context){
-    //         map[d.id] = map[d.id] || d;
-    //         map[d.id].count = ( map[d.id].count || 0 ) + 1;
-    //         return map
-    //     }, {});
 
-    console.log(edges);
+    // console.log(edges, nodes);
+    console.log("network : ", artistId, nodes .length, "nodes", edges .length, "edges" );
 
-    // Tracker.autorun(function(){
-    //     var nodes = Nodes.find().fetch();
-    //     var edges = Edges.find().fetch();
-    //     for (var i = 0; i <edges.length; i++) {
-    //         if(!edges[i].data.source || !edges[i].data.target) console.log(edges[i]);
-    //     }
-    //     console.log("fetch for ",artistId, nodes .length, "nodes", edges .length, "edges" );
-    //     // if(network)  network.updateNetworkData(nodes,edges);
-    // });
+    for (var i = 0; i <edges.length; i++) {
+        if(!edges[i].data.source || !edges[i].data.target) console.log(edges[i]);
+    }
+
+    if(network)  network.updateNetworkData(nodes,edges);
+
 
     // layout function
     var changeLayout  = function (layoutName) {

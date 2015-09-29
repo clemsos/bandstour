@@ -65,6 +65,7 @@ underscore@1.0.3
 url@1.0.4
 webapp@1.2.0
 webapp-hashing@1.0.3
+workman:x-editable-reactive-template@1.0.2
 yauh:turfjs@1.0.1
 yauh:turfjs-client@1.0.0
 yauh:turfjs-server@1.0.0
