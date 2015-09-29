@@ -31,3 +31,34 @@ Router.route('/artists/:artistId', {
         else this.render('artist', { data : {"artistId" : this.params.artistId} });
     }
 });
+
+Router.route('/artists/:artistId/timeline', {
+    waitOn: function () {
+        return Meteor.subscribe('artist', this.params.artistId)
+    },
+    action: function () {
+        if (!this.ready())  this.render("loading");
+        else this.render('timeline', { data : {"artistId" : this.params.artistId} });
+    }
+});
+
+Router.route('/artists/:artistId/map', {
+    waitOn: function () {
+        return Meteor.subscribe('artist', this.params.artistId)
+    },
+    action: function () {
+        if (!this.ready())  this.render("loading");
+        else this.render('map', { data : {"artistId" : this.params.artistId} });
+    }
+});
+
+Router.route('/artists/:artistId/network', {
+    waitOn: function () {
+        return Meteor.subscribe('artist', this.params.artistId)
+    },
+    action: function () {
+        if (!this.ready())  this.render("loading");
+        else this.render('network', { data : {"artistId" : this.params.artistId} });
+    }
+});
+

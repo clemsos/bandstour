@@ -1,0 +1,12 @@
+<template name="bargraphTimeline">
+    <select name="timeScale" id="timeScale" class="form-control">
+        <option value="year" selected="{{isSelected 'year'}}">Years</option>
+        <option value="month" selected="{{isSelected 'month'}}">Months</option>
+        <option value="week" selected="{{isSelected 'week'}}">Weeks</option>
+        <option value="day" selected="{{isSelected 'day'}}" >Days</option>
+    </select>
+    <div id="bargraph-timeline"></div>
+
+    {{start}} {{end}}
+
+</template>
