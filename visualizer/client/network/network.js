@@ -1,57 +1,165 @@
-// single network
-Template.network.created = function(){
-    var self = this;
-    var networkId = this.data.networkId;
-    this.network = new ReactiveVar();
-    this.changeLayout = new ReactiveVar();
-};
+NetworkGraph = {
+
+    initNetwork : function  (_id) {
+        console.log("initNetwok");
+        this._id = _id;
+        this.colors = d3.scale.category20b();
+
+        var self = this;
+
+        this.net = cytoscape({
+                container: document.getElementById('cy'),
+                ready: function(){
+
+                    // console.log("network ready");
+                    // self.initNetworkData(); // load data when cy is ready
+
+                    // add everything
+                    // self.addQTip();
+                    self.addCxtMenu();
+                    self.addMouseBehaviours();
+                    self.addEdgehandles();
+                },
+                // style
+                style: cytoscape.stylesheet()
+                .selector('node')
+                    .style({
+                            // 'content': function( e ){ return e.data("name") },
+                            'background-color': function( e ){return e.data("starred") ?  "yellow" : self.colors(e.data("group")) },
+                            'font-size': 12,
+                            'text-valign': 'center',
+                            'color': 'white',
+                            'text-outline-width': 2,
+                            'text-outline-color': function( e ){ return e.locked() ?  "red" : "#888" },
+                            'min-zoomed-font-size': 8
+                             // 'width': 'mapData(score, 0, 1, 20, 50)',
+                            // 'height': 'mapData(score, 0, 1, 20, 50)'
+                    })
+                .selector('edge')
+                    .style({
+                        // 'content': function( e ){ return e.data("name")? e.data("name") : "";},
+                        'target-arrow-shape': 'triangle',
+                    })
+                .selector('.edgehandles-hover')
+                    .style({
+                         'background-color': 'red'
+                    })
+                .selector('.edgehandles-source')
+                .selector('.edgehandles-target')
+                .selector('.edgehandles-preview, .edgehandles-ghost-edge')
+                    .style({
+                        'line-color': 'red',
+                        'target-arrow-color': 'red',
+                        'source-arrow-color': 'red'
+                    })
+        });
+
+        return this
+    },
 
 
-Template.network.rendered = function () {
-    var self = this;
-    var networkId = this.data.networkId;
+    updateNetworkData : function (nodes, edges) {
 
-    // create graph// network.destroy();
-    var network  = NetworkGraph.initNetwork(networkId);
-    Template.instance().network.set(network);
+            console.log("updateNetworkData");
 
-    // fetch data
-    Tracker.autorun(function(){
-        var nodes = Nodes.find().fetch();
-        var edges = Edges.find().fetch();
-        for (var i = 0; i <edges.length; i++) {
-            if(!edges[i].data.source || !edges[i].data.target) console.log(edges[i]);
+            this.net.elements().remove(); // make sure evything is clean
+
+            // prevent edges to be added before nodes
+            this.net.add( nodes );
+            this.net.add( edges );
+
+            this.net.reset() // render layout
+    },
+
+    addQTip : function  (){
+        // qtip
+        this.net.nodes().qtip({
+              content:  function(){ return this.data('id'); }
+        })
+    },
+
+    // contextual menu
+    addCxtMenu  : function  (){
+        this.net.cxtmenu({
+            selector: 'node',
+            commands: [
+              {
+                content: '<span class="fa fa-trash-o fa-2x"></span>',
+                select: function(){
+                  
+                  // remove all connected edges
+                  this.neighborhood('edge').forEach(function(el,i) {
+                    // console.log(el.id());
+                    Meteor.call("deleteEdge",el.id());
+                  })
+
+                  // remove this node
+                  Meteor.call("deleteNode",this.id());
+
+                  // remove from graph
+                  net.remove( this.neighborhood('edge') )
+                  net.remove( this )
+                }
+              },
+              {
+                content: '<span class="fa fa-star fa-2x"></span>',
+                select: function(){
+                  Meteor.call("starNode", this.id());
+                  this.style({
+                    'background-color': 'yellow'
+                  })
+                }
+              },
+              {
+                content:'<span class="fa fa-lock fa-2x"></span>',
+                select: function(){
+                  // console.log( this.position() );
+                  Meteor.call("lockNode", this.id(), this.position());
+                },
+              },
+              {
+                content:'<span class="fa fa-comments-o fa-2x"></span>',
+                select: function(){
+                  Meteor.call("addComment", this.id());
+                },
+                
+              }
+            ]
+          });
+    },
+
+    // edgehandles
+    addEdgehandles : function () {
+
+        var onComplete = function( source, target, addedEntities ){
+          Meteor.call("addEdge", source.data("id"), target.data("id"));
         }
-        console.log("fetch for ",networkId, nodes .length, "nodes", edges .length, "edges" );
-        if(network)  network.updateNetworkData(nodes,edges);
-    });
 
-    // layout function
-    var changeLayout  = function (layoutName) {
+        this.net.edgehandles({
+            complete : onComplete
+        });
+    },
 
-        // callback
-        var savePositions = function () {
-            console.log("update position ");
-            //   for (var i = 0; i < net.nodes().length; i++) {
-            //         var node = net.nodes()[i];
-            //         Meteor.call("updateNodePosition", node.id(), node.position())
-            //     }
-            }
+    // drag behaviour
+    addMouseBehaviours : function  () {
 
-            var layout = network.net.makeLayout({ 
-                name: layoutName,
-                stop: savePositions // callback on layoutstop
-            });
+        this.net.on('select', 'node', /*_.debounce(*/function( e ){
+            var node = e.cyTarget;
+            Session.set('currentType', "node");
+            Session.set('currentId', node.id());
+            $("#infoBox").css('visibility', 'visible');
+        });
 
-            // console.log(layout);
-            layout.run();
-        }
+        this.net.on('select', 'edge', /*_.debounce(*/function( e ){
+            var edge = e.cyTarget;
+            Session.set('currentType', "edge");
+            Session.set('currentId', edge.id());
+            $("#infoBox").css('visibility', 'visible');
+        });
 
-        Template.instance().changeLayout.set(changeLayout);
-};
-
-Template.network.onDestroyed(function(){
-    this.network.net.destroy();
-    delete(this.network)
-    console.log("network destroyed", this.network);
-})
+        this.net.on('drag', 'node', /*_.debounce(*/function( e ){
+            var node = e.cyTarget;
+            Meteor.call('updateNodePosition', node.id(), node.position());
+        })
+    }
+}
