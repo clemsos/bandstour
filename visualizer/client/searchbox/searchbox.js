@@ -1,26 +1,3 @@
-/*Template.searchbox.rendered = function( ) {
-    Meteor.typeahead.inject( );
-    Meteor.typeahead( 'input#search', function( ) {
-
-    } )
-};*/
-
-/*Template.searchbox.helpers( {
-    lookupArtists: function( query, sync, callback ) {
-        Meteor.call( 'search', query, {}, function( err, res ) {
-            if ( err ) {
-                console.log( err );
-                return;
-            }
-            callback( res.map( function( v ) {
-                return {
-                    value: v.name
-                };
-            } ) );
-        } );
-    }
-} );*/
-
 Template.searchbox.events( {
     'submit form': function( e, template ) {
         e.preventDefault( );
@@ -31,22 +8,21 @@ Template.searchbox.events( {
 
     'click .mdi-navigation-close': function( e ) {
         e.preventDefault( );
-        document.getElementById("search").value = '';
+        document.getElementById( "search" ).value = '';
     },
 
     'keyup #search': function( e ) {
-        console.log( event.target.value );
-        if( event.target.value != ''){
+        // console.log( event.target.value );
+        if ( event.target.value != '' ) {
             Meteor.call( 'search', slugify( event.target.value ), {}, function( err, res ) {
                 if ( err ) {
                     console.log( err );
                     return;
                 }
-                console.log( res.map( function( v ) {
-                    return {
-                        value: v.name
-                    };
-                } ) );
+                $( "#dropdown1>li" ).remove( );
+                res.forEach( function( r ) {
+                    $( "#dropdown1" ).append( "<li><a href=\"/artists/" + r.slug + "\">" + r.name + "</a></li>" );
+                } );
             } );
         }
     }

@@ -1,31 +1,26 @@
 <template name="searchbox">
-            <!-- <input id="search" class="typeahead" name="bandName" type="search" placeholder="Lookup a band" autocomplete="off" spellcheck="off" data-source="lookupArtists" data-activates='dropdown1' required> -->
     <form>
         <div class="input-field">
             <input
-	            id="search"
-	            name="bandName"
-	            type="search"
-	            placeholder="Lookup a band"
-	            autocomplete="off"
-	            spellcheck="off"
-	            data-activates='dropdown1'
-	            data-beloworigin="true"
-	            required
+                id="search"
+                name="bandName"
+                type="search"
+                placeholder="Lookup a band"
+                autocomplete="off"
+                spellcheck="off"
+                data-activates='dropdown1'
+                data-beloworigin="true"
+                required
             >
             <i class="mdi-navigation-close close"></i>
             
-            <ul id='dropdown1' class='dropdown-content'>
-            	<!-- {{#each lookupArtists}}
-            		<li><a href="">{{this}}</a></li>
-            	        		{{/each}} -->
-            </ul>
+            <ul id='dropdown1' class='dropdown-content'></ul>
         </div>
     </form>
 
     <script>
-    	$(document).ready(function(){
-		    $('#search').dropdown();
-    	});
+        $(document).ready(function(){
+            $('#search').dropdown();
+        });
     </script>
 </template>

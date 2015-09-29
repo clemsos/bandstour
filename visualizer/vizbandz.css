@@ -9,6 +9,7 @@ svg {
 
 #navTitle {
     margin-left: 20px;
+}
 
 #network {
   width : 100%;
@@ -20,40 +21,3 @@ nav ul{
 	margin-right: 20px !important;
 }
  
-/* .typeahead .tt-suggestion {
-    padding: 8px 20px;
-}
-.typeahead .tt-suggestion + .tt-suggestion {
-    border-top: 1px solid #ccc;
-}
-.typeahead .repo-language {
-    float: right;
-    font-style: italic;
-}
-.typeahead .repo-name {
-    font-weight: bold;
-}
-.typeahead .repo-description {
-    font-size: 14px;
-}
-.typeahead .input-field input[type=search] {
-    display: block;
-    line-height: inherit;
-    padding-left: 4rem;
-    width: calc(100% - 4rem);
-}
-.typeahead .input-field {
-    position: relative;
-    min-width: 10px;
-    overflow: hidden;
-    margin-top: 1rem;
-}
-.typeahead .input-field input[type=search] ~ .mdi-navigation-close {
-    position: absolute;
-    top: 0;
-    right: 1rem;
-    color: transparent;
-    cursor: pointer;
-    font-size: 2rem;
-    transition: .3s color;
-}  */
