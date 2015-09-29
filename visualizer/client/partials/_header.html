@@ -1,4 +1,11 @@
 <template name="header">
-    <h3><a href="/">Bandstour</a></h3>
-    {{> menu }}
+    <nav>
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo">Bandstour</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li>{{> searchbox }}</li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </div>
+  </nav>
 </template>

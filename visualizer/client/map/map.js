@@ -15,17 +15,15 @@ Template.map.rendered = function() {
             return map
         }, {});
 
-    // console.log(venues);
-
     // GeoJSON features 
     var features = [];
     Object.keys(venues).forEach(function(id){
         var venue = venues[id];
 
-        if( !isValidCoordinate(venue.latitude) && !isValidCoordinate(venue.longitude) ) 
-            console.log(venue, id);
+        // if( !isValidCoordinate(venue.latitude) && !isValidCoordinate(venue.longitude) ) 
+            // console.log(venue, id);
 
-        if( venue.count > Session.get("minShowsPerVenue")) {
+        if( venue.count > Session.get("minShowsPerVenue") ) {
             // parse GeoJSON  point
             var p = turf.point(
                                [venue.latitude, venue.longitude],
@@ -57,7 +55,7 @@ Template.map.rendered = function() {
 
     // radius scale 
     var radius = d3.scale.linear()
-            .domain([0,20])
+            .domain([0,20]) // TODO : 
             .range([5, 50]);
 
     var feature = g.selectAll("circle")
@@ -72,15 +70,16 @@ Template.map.rendered = function() {
         console.log(d.properties.name,d.properties.city, d.properties.country);
     })
 
-    // define projection
+    // map events: update view on resize/zoom
     map.on("viewreset", update);
     map.on("zoom", update);
     update();
 
     function update() {
-        var bounds = path.bounds(collection),
         // var bounds = boundingExtent(features),
-        // var bounds = map.getBounds();
+        // var bounds = map.getBounds(),
+
+        var bounds = path.bounds(collection),
             topLeft = bounds[0],
             bottomRight = bounds[1];
 
@@ -100,7 +99,7 @@ Template.map.rendered = function() {
         feature.attr("transform",  function(d) { 
             return "translate("+ 
                  applyLatLngToLayer(d).x + ","+ 
-                applyLatLngToLayer(d ).y +")";
+                 applyLatLngToLayer(d ).y +")";
         })
 
     }

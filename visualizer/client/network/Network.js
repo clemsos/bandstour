@@ -8,7 +8,7 @@ NetworkGraph = {
         var self = this;
 
         this.net = cytoscape({
-                container: document.getElementById('cy'),
+                container: document.getElementById(_id),
                 ready: function(){
 
                     // console.log("network ready");
