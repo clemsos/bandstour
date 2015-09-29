@@ -1,19 +1,18 @@
  <template name="mainLayout">
 
-{{> header}}
+    <!-- Materialize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="/lib/materialize.min.js"></script>
 
-<div id="page-wrapper" style="min-height: 561px;">
-    <div class="main-view">
-    {{> yield}}
+    {{> header}}
+
+    <div id="page-wrapper" style="min-height: 561px;">
+        <div class="main-view">
+        {{> yield}}
+        </div>
     </div>
-</div>
 
-{{> footer}}
+    {{> footer}}
 
-<!-- Compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
-
-<!-- Compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
-      
 </template>
