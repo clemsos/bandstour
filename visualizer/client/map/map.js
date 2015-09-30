@@ -41,8 +41,10 @@ Template.map.rendered = function() {
             );
             features.push( p );
             ///add coords for gravitycentercalculation
-            bandgravitylat.push( venue.latitude );
-            bandgravitylong.push( venue.longitude );
+            for (var c = 0; c < venue.count; c++) {
+                bandgravitylat.push( venue.latitude );
+                bandgravitylong.push( venue.longitude );
+            }
         }
     } );
 
@@ -150,7 +152,6 @@ Template.map.rendered = function() {
     update();
 
     function resetView(){
-        console.log("resetView");
         svg.style( "width", d3.select( "body" ).style( 'width' ) )
         .style( "height", d3.select( "#map" ).style( 'height' ) );
         update();
