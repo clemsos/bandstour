@@ -20,3 +20,15 @@ Meteor.publish('artist', function (artistId) {
     var artists = Artists.find({'slug' : artistId});
     return artists;
 });
+
+Meteor.publish('nodes', function (artistId) {
+    var nodes = Nodes.find({'networkId' : artistId});
+    console.log(nodes.count(), "nodes");
+    return nodes;
+});
+
+Meteor.publish('edges', function (artistId) {
+    var edges = Edges.find({'networkId' : artistId});
+    console.log(edges.count(), "edges");
+    return edges;
+});

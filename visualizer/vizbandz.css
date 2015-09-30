@@ -2,6 +2,10 @@
     margin-left: 20px;
 }
 
+select {
+    display :block !important;
+}
+
 nav ul {
     margin-right: 20px !important;
 }

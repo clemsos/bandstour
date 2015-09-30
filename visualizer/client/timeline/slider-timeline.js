@@ -45,6 +45,9 @@ Template.timeSlider.helpers({
     start : function() {
       return Session.get('slider')[0] 
     },
+    isSelected : function(value) {
+        return Session.get("timescale") == value;
+    },
     end : function() { 
       return Session.get('slider')[1] 
     },

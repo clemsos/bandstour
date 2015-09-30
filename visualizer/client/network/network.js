@@ -15,47 +15,8 @@ Template.network.rendered = function () {
     Template.instance().network.set(network);
 
     // fetch and parse data
-    var artist  = Artists.findOne();
-    
-    // nodes are venues
-    var venues = artist.gigs
-        .map(function (e) {
-            return e.venue;
-        })
-        .reduce( function(map, d , i, context){
-            map[d.id] = map[d.id] || d;
-            map[d.id].count = ( map[d.id].count || 0 ) + 1;
-            return map
-        }, {});
-
-    var nodes = [ ];
-    Object.keys( venues ).forEach( function( id ) {
-        venues[ id ].group = venues[ id ].country;
-        var node = {
-            data : venues[ id ],
-            group : "nodes"
-        }
-        nodes.push(node);
-    })
-
-    // calculate edges
-    var edges = [];
-    for (var i = 0; i < artist.tours.length; i++) {
-        var tour = artist.tours[i];
-         tour.venues.forEach(function (d, j){
-            if( j < tour.venues.length - 1) {
-                var edge = {
-                    group : "edges", 
-                    data : {
-                         'source' : d.id, 
-                         'target' : tour.venues[j+1].id, 
-                         'group' : i 
-                    }
-                }
-                edges.push( edge);
-            }
-         }) 
-    }
+    var edges = Edges.find().fetch();
+    var nodes = Nodes.find().fetch();
 
     // console.log(edges, nodes);
     console.log("network : ", artistId, nodes .length, "nodes", edges .length, "edges" );
@@ -65,7 +26,6 @@ Template.network.rendered = function () {
     }
 
     if(network)  network.updateNetworkData(nodes,edges);
-
 
     // layout function
     var changeLayout  = function (layoutName) {
@@ -93,6 +53,6 @@ Template.network.rendered = function () {
 
 Template.network.onDestroyed(function(){
     // this.network.net.destroy();
-    // delete(this.network)
+
     console.log("network destroyed", this.network);
 })
