@@ -1,10 +1,10 @@
-Template.map.rendered = function() {
+Template.map.rendered = function( ) {
     // session vars
     Session.set( 'minShowsPerVenue', 0 );
 
     var maxRadius = 25;
     //  parse data
-    var artist = Artists.findOne();
+    var artist = Artists.findOne( );
     var venues = artist.gigs
         .map( function( e ) {
             return e.venue;
@@ -56,38 +56,32 @@ Template.map.rendered = function() {
     map.addLayer( layer );
 
     // setup d3 SVG
-    var svg = d3.select( "#map" ).append( "svg" )
-        .style( "position", "absolute" )
-        .style( "top", 0 )
-        .style( "left", 0 )
-        .style( "width", d3.select( "body" ).style('width') )
-        .style( "height", d3.select( "#map" ).style('height') );
-
-    var g = svg.append( "g" ).attr( "class", "leaflet-zoom-hide" );
+    var svg = d3.select( map.getPanes( ).overlayPane ).append( "svg" ),
+        g = svg.append( "g" ).attr( "class", "leaflet-zoom-hide" );
 
     var transform = d3.geo.transform( {
-            point: projectPoint
-        } ),
-        path = d3.geo.path().projection( transform );
+        point: projectPoint
+    } ),
+        path = d3.geo.path( ).projection( transform );
 
     // radius scale 
-    var radius = d3.scale.linear()
+    var radius = d3.scale.linear( )
         .domain( [
             Session.get( 'minShowsPerVenue' ),
             d3.max( Object.keys( venues ).map( function( d ) {
-                return venues[ d ].count;
+                return venues[d].count;
             } ) )
         ] )
         .range( [ 5, maxRadius ] );
 
     var feature = g.selectAll( "circle" )
-        .data( collection.features ).enter()
+        .data( collection.features ).enter( )
         .append( "circle" )
         .attr( "r", function( d ) {
             return radius( d.properties.count );
         } )
         .style( "fill", "red" )
-        .style( "stroke", "none" )
+        .style( "stroke", "none")
         .style( "opacity", .6 );
 
     feature.on( 'click', function( d ) {
@@ -95,18 +89,27 @@ Template.map.rendered = function() {
     } );
 
     // define projection
-    map.on( "move", update );
+    map.on( "viewreset", update );
     map.on( "zoom", update );
-    update();
+    update( );
 
-    function update() {
-        var mapBounds = map.getBounds();
-        var SW = map.latLngToLayerPoint( mapBounds._southWest ),
-            NE = map.latLngToLayerPoint( mapBounds._northEast );
-        // console.log(NE, SW);
-        // console.log(Math.abs(NE.x - SW.x), Math.abs(NE.y - SW.y));
+    function update( ) {
+        var bounds = path.bounds( collection ),
+            topLeft = bounds[ 0 ],
+            bottomRight = bounds[ 1 ];
 
-        svg.attr("viewBox", SW.x + " " + NE.y + " " + Math.abs(NE.x - SW.x)+" "+Math.abs(NE.y - SW.y));
+        console.log( bounds );
+
+        // console.log(topLeft, bottomRight);
+
+        // Setting the size and location of the overall SVG container
+        svg.attr( "width", bottomRight[ 0 ] - topLeft[ 0 ] + maxRadius )
+            .attr( "height", bottomRight[ 1 ] - topLeft[ 1 ] + maxRadius )
+            .style( "left", ( topLeft[ 0 ] - maxRadius / 2 ) + "px" )
+            .style( "top", ( topLeft[ 1 ] - maxRadius / 2 ) + "px" );
+        // .attr( "viewbox", )
+
+        g.attr( "transform", "translate(" + ( -topLeft[ 0 ] ) + "," + ( -topLeft[ 1 ] ) + ")" );
 
         // points
         feature.attr( "transform", function( d ) {
@@ -125,7 +128,7 @@ Template.map.rendered = function() {
     function applyLatLngToLayer( d ) {
         var y = d.geometry.coordinates[ 1 ];
         var x = d.geometry.coordinates[ 0 ];
-        return map.latLngToLayerPoint( new L.LatLng( x, y ) );
+        return map.latLngToLayerPoint( new L.LatLng( x, y ) )
     }
 
     function isValidCoordinate( lat, lng ) {
@@ -135,31 +138,31 @@ Template.map.rendered = function() {
     }
 }
 
-var getRandomColor = function() {
+var getRandomColor = function( ) {
     var letters = '0123456789ABCDEF'.split( '' );
     var color = '#';
     for ( var i = 0; i < 6; i++ ) {
-        color += letters[ Math.floor( Math.random() * 16 ) ];
+        color += letters[ Math.floor( Math.random( ) * 16 ) ];
     }
     return color;
 };
 
 Template.map.events( {
     'click #showVenues': function( e ) {
-        e.preventDefault();
-        var artist = Artists.findOne();
+        e.preventDefault( );
+        var artist = Artists.findOne( );
         // render 
     },
 
     'click showTours': function( e ) {
-        e.preventDefault();
+        e.preventDefault( );
         var pointList = result.gigs.map( function( gig, i ) {
             var nextGig = result.gigs[ i + 1 ];
             return new L.LatLng( gig.venue.latitude, gig.venue.longitude );
         } );
 
         var firstpolyline = new L.Polyline( pointList, {
-            color: getRandomColor(),
+            color: getRandomColor( ),
             weight: 10,
             opacity: 0.5,
             smoothFactor: 1
