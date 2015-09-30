@@ -10,6 +10,9 @@
         <li>{{ currentSelection.data.id }}</li>
         <li>{{ currentSelection.group }}</li>
         <li>{{ currentSelection.data.group }}</li>
+        {{#each currentSelection.info }}
+                <li>{{ this }}</li>
+        {{/each}}
     </ul>
 
 </template>

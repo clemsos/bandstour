@@ -24,21 +24,31 @@ NetworkGraph = {
                 style: cytoscape.stylesheet()
                 .selector('node')
                     .style({
-                            // 'content': function( e ){ return e.data("name") },
-                            'background-color': function( e ){return e.data("starred") ?  "yellow" : self.colors(e.data("group")) },
+                            'content': function( e ){ return e.data().data.name }, //e.data("data.name") },
+                            'background-color': function( e ){
+                                return e.data("starred") ?  "yellow" : self.colors(e.data().data.country) 
+                            },
                             'font-size': 12,
                             'text-valign': 'center',
                             'color': 'white',
                             'text-outline-width': 2,
                             'text-outline-color': function( e ){ return e.locked() ?  "red" : "#888" },
-                            'min-zoomed-font-size': 8
-                             // 'width': 'mapData(score, 0, 1, 20, 50)',
-                            // 'height': 'mapData(score, 0, 1, 20, 50)'
+                            'min-zoomed-font-size': 8,
+                             'width': function(e) { 
+                                var count = e.data().data.count || 12; 
+                                return count*10 //'mapData('+ count +',0, 1, 20, 50)'
+                            },
+                             'height': function(e) { var count = e.data().data.count || 12; 
+                                return count*10 //'mapData('+ count +',0, 1, 20, 50)'
+                            }
                     })
                 .selector('edge')
                     .style({
                         // 'content': function( e ){ return e.data("name")? e.data("name") : "";},
                         'target-arrow-shape': 'triangle',
+                        'line-color': function( e ){
+                            return self.colors(e.data().group) 
+                        }
                     })
                 .selector('.edgehandles-hover')
                     .style({

@@ -13,11 +13,23 @@ Template.infobox.helpers({
 
         console.log(id, type);
 
-       // if( type == "node") {
-       //      item= Nodes.findOne({"data.id" : id});
-       //  } else if (type== "edge"){
-       //      item= Edges.findOne({"data.id" : id});
-       //  }
+        // console.log(Nodes);
+       if( type == "node") {
+            item = Nodes.findOne({"data.id" : id});
+        } else if (type== "edge"){
+            item = Edges.findOne({"data.id" : id});
+        }
+
+        console.log(item);
+        var cleanData = [];
+        
+        if (item.data) {
+          for (d in item.data.data) {
+            cleanData.push(d + " : "+item.data.data[d])
+          }
+        };
+
+        item.info = cleanData;
 
         return item;
     }
