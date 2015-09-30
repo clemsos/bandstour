@@ -75,19 +75,9 @@ client.connect( url, function( err, db ) {
 
                         // more than 2 days to next date
                         if ( !tourInProgress ) { // single gig
-                            /*var singleGig = {};
-                            singleGig.venue = [];
-                            singleGig.date = gig.datetime;
-                            singleGig.distance = km;
-                            singleGig.venue.push( gig.venue );
-                            singleGigs.push( singleGig );*/
                             singleGigs.push( gig );
                             tourInProgress = false;
                         } else { // last gig of the tour 
-                            /*tour.dates.push( gig.datetime );
-                            tour.distances.push( km );
-                            tour.venues.push( gig.venue );*/
-
                             // distance must be calculated before adding last gig
                             // since last gig.distanceToNextGig should not be part of tour.distance
                             tour.distance = 0;
@@ -102,16 +92,13 @@ client.connect( url, function( err, db ) {
                             tours.push( tour );
                         }
 
-	                    // off tour 
-	                    timeOffTour += gig.timeToNextGig;
+                        // off tour
+                        timeOffTour += gig.timeToNextGig;
                     }
 
                     // parse last date
                     if ( i == artist.gigs.length - 2 ) {
                         if ( tourInProgress ) { // end the tour
-                            /*tour.dates.push( nextGig.datetime );
-                            tour.distances.push( undefined );
-                            tour.venues.push( gig.venue );*/
                             tour.distance = 0;
                             for ( var d in tour.distances ) {
                                 tour.distance += tour.distances[ d ];
@@ -122,13 +109,7 @@ client.connect( url, function( err, db ) {
                             tourInProgress = false;
 
                             tours.push( tour );
-                        } else { // single date 
-                            /*var singleGig = {};
-                            singleGig.venue = [];
-                            singleGig.date = nextGig.datetime;
-                            singleGig.distance = undefined;
-                            singleGig.venue.push( gig.venue );
-                            singleGigs.push( singleGig );*/
+                        } else { // single date
                             singleGigs.push( nextGig );
                             tourInProgress = false;
                         }
@@ -187,6 +168,7 @@ client.connect( url, function( err, db ) {
                 artist.tours = tours;
                 artist.singleGigs = singleGigs;
                 artist.totalKm = totalKm;
+                artist.totalGigs = nbDatesOnTour + singleGigs.length;
                 artist.ecartType = ecartType;
                 artist.tourDutyCycle = tourDutyCycle;
                 artist.meanOfGigsPerYear = meanOfGigsPerYear;
@@ -225,8 +207,8 @@ function clone( obj ) {
 function slugify( text ) {
     return text.toString().toLowerCase()
         .replace( /\s+/g, '-' ) // Replace spaces with -
-    .replace( /[^\w\-]+/g, '' ) // Remove all non-word chars
-    .replace( /\-\-+/g, '-' ) // Replace multiple - with single -
-    .replace( /^-+/, '' ) // Trim - from start of text
-    .replace( /-+$/, '' ); // Trim - from end of text
+        .replace( /[^\w\-]+/g, '' ) // Remove all non-word chars
+        .replace( /\-\-+/g, '-' ) // Replace multiple - with single -
+        .replace( /^-+/, '' ) // Trim - from start of text
+        .replace( /-+$/, '' ); // Trim - from end of text
 }

@@ -10,14 +10,15 @@
     <div class="row">
         {{#each categories}}
             <div class="category col s2">
-                <h5>{{ this }}</h5>
-                {{ artist[this] }}
+                <h5>{{ name }}</h5>
+                <hr>
+                {{ value }}
             </div>
         {{/each}}
     </div>
 
     <div class="row">
-        <div class="col s6">
+        <div class="col s4">
             <h4>Tours</h4>
             <ul>
                 {{#each artist.tours}}
@@ -25,8 +26,10 @@
                 {{/each}}
             </ul>
         </div>
-        <div class="col s6">
+
+        <div class="col s4">
             <h4> singleGigs </h4>
+            <hr>
             <ul>
                 {{#each artist.singleGigs}}
                     {{> gig }}
@@ -37,6 +40,7 @@
 </template>
 
 <template name="tour">
+	<hr>
     <ul>
         {{#each gigs}}
             {{> gig }}
@@ -45,5 +49,5 @@
 </template>
 
 <template name="gig">
-    <li>{{ date }} - {{ venue.city}}</li>
+    <li>{{ venue.city }}: {{ datetime }}</li>
 </template>

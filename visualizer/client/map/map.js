@@ -48,7 +48,7 @@ Template.map.rendered = function() {
 
     // GeoJSON collection
     var collection = turf.featurecollection( features );
-    console.log( "collection", collection );
+    // console.log( "collection", collection );
 
     var bandgravitycenterlat = 0,
         bandgravitycenterlong = 0;
@@ -66,7 +66,7 @@ Template.map.rendered = function() {
         [ bandgravitycenterlat, bandgravitycenterlong ], {
             'name': artist.name,
             'city': "centre de gravité",
-            'country': ( "centralité géo", bandgravitycenterlat, " et", bandgravitycenterlong )
+            'country': ( "centralité géo: " + bandgravitycenterlat + " - " + bandgravitycenterlong )
         }
     ) );
     console.log( "q", q );
