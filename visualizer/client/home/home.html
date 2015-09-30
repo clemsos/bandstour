@@ -1,8 +1,12 @@
 <template name="home">
-    <h1>Pantheon Top10</h1>
-    <ul>
-        {{#each types}}
-            <li><a href="/top/10/{{this}}">{{this}}</a></li>
-        {{/each}}
-    </ul>
+	<div class="row">
+		<div class="col s12">
+		    <h1>Pantheon Top10</h1>
+		    <ul>
+		        {{#each types}}
+		            <li><a href="/top/10/{{this}}">{{this}}</a></li>
+		        {{/each}}
+		    </ul>
+		</div>
+	</div>
 </template>

@@ -4,9 +4,14 @@ Template.searchbox.events( {
         var bandName = event.target.bandName.value;
         if ( !bandName ) return;
         Router.go( '/artists/' + slugify( bandName ) );
+        document.getElementById( "search" ).value = '';
     },
 
-    'click .mdi-navigation-close': function( e ) {
+    'click #dropdown1>li': function( ) {
+        document.getElementById( "search" ).value = '';
+    },
+
+    'click #searchClose': function( e ) {
         e.preventDefault( );
         document.getElementById( "search" ).value = '';
     },

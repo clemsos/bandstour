@@ -17,7 +17,7 @@ Router.route('/top/:count/:category', {
         if (!this.ready()) 
             this.render("loading");
         else
-            this.render('artists');
+            this.render('top');
     }
 });
 

@@ -1,36 +1,49 @@
 <template name="artist">
-    
-    <h1>{{ artist.name }}</h1>
-
-        {{#each categories}}
-            {{ this }} {{ artist[this]}}
-        {{/each}}
+    <div class="row">
+        <div class="col s12">
+            <h1>{{ artist.name }}</h1>
+        </div>
+    </div>
 
     {{> map}}
 
-    <h4>Tours</h4>
-    <ul>
-        {{#each artist.tours}}
-                {{this}}
+    <div class="row">
+        {{#each categories}}
+            <div class="category col s2">
+                <h5>{{ this }}</h5>
+                {{ artist[this] }}
+            </div>
         {{/each}}
-    </ul>
+    </div>
 
-    <h4> singleGigs </h4>
-    <ul>
-        {{#each artist.singleGigs}}
-            {{> gig gig=this }}
-        {{/each}}
-    </ul>
+    <div class="row">
+        <div class="col s6">
+            <h4>Tours</h4>
+            <ul>
+                {{#each artist.tours}}
+                    {{> tour}}
+                {{/each}}
+            </ul>
+        </div>
+        <div class="col s6">
+            <h4> singleGigs </h4>
+            <ul>
+                {{#each artist.singleGigs}}
+                    {{> gig }}
+                {{/each}}
+            </ul>
+        </div>
+    </div>
 </template>
 
 <template name="tour">
     <ul>
-        {{#each this.tour}}
-            {{> gig gig=this }}
+        {{#each gigs}}
+            {{> gig }}
         {{/each}}
     </ul>
 </template>
 
 <template name="gig">
-    <li>{{ this.gig.date }} - {{ this.gig.venue.city}}</li>
+    <li>{{ date }} - {{ venue.city}}</li>
 </template>
