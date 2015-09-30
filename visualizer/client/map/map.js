@@ -144,12 +144,13 @@ Template.map.rendered = function() {
     } );
 
     // define projection
-    map.on( "viewreset", resetView );
+    map.on( "resize", resetView );
     map.on( "move", update );
     map.on( "zoom", update );
     update();
 
     function resetView(){
+        console.log("resetView");
         svg.style( "width", d3.select( "body" ).style( 'width' ) )
         .style( "height", d3.select( "#map" ).style( 'height' ) );
         update();
