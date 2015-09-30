@@ -3,16 +3,13 @@
     <!-- Materialize -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
-    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
-    <script src="/lib/materialize.min.js"></script>
 
     {{> header}}
+    {{> flashMessages}}
 
-    <div id="page-wrapper" style="min-height: 561px;">
-        {{> flashMessages}}
-        <div class="main-view">
+    <div class="main-view">
+
         {{> yield}}
-        </div>
     </div>
 
     {{> footer}}
