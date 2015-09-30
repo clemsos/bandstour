@@ -4,13 +4,15 @@ Template.network.created = function(){
     this.changeLayout = new ReactiveVar();
 };
 
-
+///TODO:SELECT ARTIST THEN SHOW VENUES
 Template.network.rendered = function () {
     var self = this;
     var artistId = this.data.networkId;
     console.log(this.data);
+    console.log("this.data.networkId",this.data.networkId)
 
-    // create graph// network.destroy();
+    // create graph
+    // network.destroy();
     var network  = NetworkGraph.initNetwork("network");
     Template.instance().network.set(network);
 

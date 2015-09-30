@@ -127,7 +127,7 @@ Template.map.rendered = function() {
         .style( "stroke", "none" )
         .style( "opacity", .6 );
 
-    // features du centre de Gravité géographique FIX ME!! CHANGE STYLE OF THE CENTRALITY POINT
+    // features du centre de Gravité géographique 
     var g2 = svg.append( "g" ).attr( "class", "leaflet-zoom-hide" );
     var featurecentr = g2.selectAll( "circle" )
         .data( colleccentr.features ).enter()
