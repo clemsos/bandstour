@@ -35,3 +35,7 @@ random
 ejson
 spacebars
 check
+aldeed:tabular@=1.4.1
+harrison:papa-parse
+mrt:flash-messages
+mikowals:batch-insert

@@ -1,3 +1,4 @@
+aldeed:tabular@1.4.1
 autoupdate@1.2.3
 babel-compiler@5.8.24_1
 babel-runtime@0.1.4
@@ -26,6 +27,7 @@ ecmascript-collections@0.1.6
 ejson@1.0.7
 fastclick@1.0.7
 geojson-utils@1.0.4
+harrison:papa-parse@1.1.0
 hot-code-push@1.0.0
 html-tools@1.0.5
 htmljs@1.0.5
@@ -50,6 +52,7 @@ meteor@1.1.9
 meteor-base@1.0.1
 meteorhacks:async@1.0.0
 meteorhacks:npm@1.5.0
+mikowals:batch-insert@1.1.13
 minifiers@1.1.7
 minimongo@1.0.10
 mobile-experience@1.0.1
@@ -57,6 +60,8 @@ mobile-status-bar@1.0.6
 momentjs:moment@2.10.6
 mongo@1.1.2
 mongo-id@1.0.1
+mongo-livedata@1.0.9
+mrt:flash-messages@1.0.1
 npm-container@1.2.0
 npm-mongo@1.4.39_1
 observe-sequence@1.0.7
