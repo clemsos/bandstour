@@ -47,8 +47,8 @@ Template.networkTools.events = {
         if (net.edges()[0].css("content") == "") {
             net.edges().css({
                 'content': function(e) {
-                    console.log(e.data().data.name);
-                    return e.data().data.name;
+                    if (e.data().data) return e.data().data.name;
+                    else return ""
                 }
             });
         } else {
