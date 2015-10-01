@@ -32,11 +32,11 @@ client.connect(url, function(err, db) {
             return item.slug;
         });
 
-        artistList = ["cannibal-corpse"];
+        //artistList = ["cannibal-corpse"];
 
-        // Initialize the Ordered Batch
-        var nodesBatch = Nodes.initializeUnorderedBulkOp();
-        var edgesBatch = Edges.initializeUnorderedBulkOp();
+        // Initialize the Ordered Batch, SWITCHED TO ORDERED AS UNORDERED DOESN'T ACKNOWLEDGE WRITES!!!
+        var nodesBatch = Nodes.initializeOrderedBulkOp();
+        var edgesBatch = Edges.initializeOrderedBulkOp();
 
         // artistList = ["david-guetta"];
 
@@ -129,7 +129,8 @@ makeNode = function(networkId, nodeId, group, lat, lng, data, x, y) {
     return {
         group: 'nodes',
         data: {
-            id: String(nodeId) || " node-" + Date.now(),
+            //replaced  node name creation because they were concurrently created
+            id: String(nodeId) || 'node-' + Date.now()+Math.random()*10000000000000000,
             lat: lat || 0,
             lng: lng || 0,
             starred: false,
@@ -149,7 +150,8 @@ makeEdge = function(networkId, source, target, group, data) {
     return {
         group: 'edges',
         data: {
-            id: 'edge-' + Math.round(Math.random() * 1000000),
+            //replaced  node name creation because they were concurrently created
+            id: 'edge-' + Date.now()+Math.random()*10000000000000000,
             'source': source,
             'target': target,
             'group': group || "group",
