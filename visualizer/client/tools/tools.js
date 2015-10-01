@@ -5,6 +5,31 @@ Template.networkTools.onCreated(function() {
     this.changeLayout.set(this.view.parentView._templateInstance.changeLayout.get())
 });
 
+Template.networkTools.rendered = function() {}
+
+Template.networkTools.helpers({
+    layouts: function() {
+        return [
+            "springy", "random", "grid", "circle", "breadthfirst", "concentric"
+        ].map(function(d) {
+            return {
+                "slug": d,
+                "name": d.charAt(0).toUpperCase() + d.slice(1)
+            };
+        });
+    },
+
+    nodeCategories: function() {
+        var node = Nodes.findOne({}, {
+            fields: {
+                "data.data": 1
+            }
+        });
+        return Object.keys(node.data.data);
+    }
+
+})
+
 Template.networkTools.events = {
 
     // add/remove nodes
@@ -22,6 +47,16 @@ Template.networkTools.events = {
     // apply layout
     'click .layout': function(e, template) {
         template.view.parentView._templateInstance.changeLayout.get()($(e.target).data().layoutName);
+    },
+
+    // filter
+    'change #nodeCatColor': function(e, template) {
+        var val = $(e.currentTarget).find('option:selected').val();
+        var net = template.view.parentView._templateInstance.network.get().net;
+
+        // console.log(val);
+        updateNodesColorsByCat(net, val);
+
     },
 
     'click .toggle-node-labels': function(e, template) {
@@ -78,6 +113,17 @@ Template.networkTools.events = {
         network.remove(isolated);
     }
 
+}
+
+// BUG : colors don't change
+function updateNodesColorsByCat (net, val){
+    var colors = d3.scale.category20b();
+
+    net.nodes().css({
+            'background-color': function(n) {
+                return n.data("starred") ? "yellow" : colors( n.data().data[val] );
+                }
+            });
 
 
 }

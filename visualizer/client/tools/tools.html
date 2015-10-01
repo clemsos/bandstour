@@ -8,14 +8,19 @@
             </p>
             <a class='btn dropdown-button' href="#" data-activates="layouts" role="button">Layouts <span class="caret"></span></a>
             <ul id="layouts" class="dropdown-content">
-                <li><a class="layout" data-layout-name="springy" href="#">Force</a></li>
-                <li><a class="layout" data-layout-name="random" href="#">Random</a></li>
-                <li><a class="layout" data-layout-name="grid" href="#">Grid</a></li>
-                <li><a class="layout" data-layout-name="circle" href="#">Circle</a></li>
-                <li><a class="layout" data-layout-name="breadthfirst" href="#">Breadth First</a></li>
-                <li><a class="layout" data-layout-name="concentric" href="#">Concentric</a></li>
+                {{#each layouts }}
+                    <li><a class="layout" data-layout-name="{{this.slug}}" href="#">{{ this.name }}</a></li>
+                {{/each}}
             </ul>
         </div>
+
+        <label for="nodeCatColor">Node Color</label>
+        <select class="browser-default" name="nodeCatColor" id="nodeCatColor">
+            {{#each nodeCategories}}
+                <option value="{{this }}">{{this }}</option>
+            {{/each}}
+        </select>
+
         <div class="card-action">
             <a id="edges-lab" href="/artists/{{networkId}}/edges">Edges</a>
             <a id="nodes-lab" href="/artists/{{networkId}}/nodes">Nodes</a>
