@@ -1,4 +1,4 @@
-Template.networkTools.onCreated(function(){
+Template.networkTools.onCreated(function() {
     this.changeLayout = new ReactiveVar();
 
     // inherit change layout function from parent network view
@@ -8,51 +8,71 @@ Template.networkTools.onCreated(function(){
 Template.networkTools.events = {
 
     // add/remove nodes
-    "click #add-node" :  function(){ 
-        var nodeId =  'node' + Math.round( Math.random() * 1000000 );
+    "click #add-node": function() {
+        var nodeId = 'node' + Math.round(Math.random() * 1000000);
         var node = makeNode(nodeId);
         Meteor.call("addNode", node);
     },
 
     // add random nodes 
-    "click #init-data": function(){
-        Meteor.call("resetNetworkData", this.networkId); 
+    "click #init-data": function() {
+        Meteor.call("resetNetworkData", this.networkId);
     },
 
-    // layouts
-    'click #colaLayout' : function(e, template){  
-        template.view.parentView._templateInstance.changeLayout.get()("cola"); 
+    // apply layout
+    'click .layout': function(e, template) {
+        template.view.parentView._templateInstance.changeLayout.get()($(e.target).data().layoutName);
     },
-    'click #randomLayout' : function(e, template){
-        template.view.parentView._templateInstance.changeLayout.get()("random");
+
+    'click .toggle-node-labels': function(e, template) {
+        var net = template.view.parentView._templateInstance.network.get().net;
+
+        if (net.nodes()[0].css("content") == "") {
+            net.nodes().css({
+                'content': function(e) {
+                    console.log(e.data().data.name);
+                    return e.data().data.name;
+                }
+            });
+        } else {
+            net.nodes().css({
+                "content": ""
+            });
+        }
     },
-    'click #circleLayout' : function(e, template){  
-        template.view.parentView._templateInstance.changeLayout.get()("circle") 
-    },
-    'click #gridLayout' : function(e, template){  
-        template.view.parentView._templateInstance.changeLayout.get()("grid") 
-    },
-    'click #breadthfirstLayout' : function(e, template){  
-        template.view.parentView._templateInstance.changeLayout.get()("breadthfirst") 
-    },
-    'click #concentricLayout' : function(e, template){  
-        template.view.parentView._templateInstance.changeLayout.get()("concentric") 
+
+    'click .toggle-edge-labels': function(e, template) {
+        var net = template.view.parentView._templateInstance.network.get().net;
+
+        if (net.edges()[0].css("content") == "") {
+            net.edges().css({
+                'content': function(e) {
+                    console.log(e.data().data.name);
+                    return e.data().data.name;
+                }
+            });
+        } else {
+            net.edges().css({
+                "content": ""
+            });
+        }
+
     },
 
     // toggle add/remove edges feature
-    'click #draw-edgehandles' : function(){
+    'click #draw-edgehandles': function() {
 
         // var edgeHandlesOn = Session.get('edgeHandlesOn') == "drawoff" ? "drawon" : "drawoff";
         // var edgeHandlesOn = Session.get('edgeHandlesOn') == 'disable' ? 'enable' : 'disable';
 
-        var edgeHandlesOn = Session.get('edgeHandlesOn') ? false : true ;
+        var edgeHandlesOn = Session.get('edgeHandlesOn') ? false : true;
         Session.set('edgeHandlesOn', edgeHandlesOn);
         console.log(edgeHandlesOn);
-        if (edgeHandlesOn)net.edgehandles.start();
+        if (edgeHandlesOn) net.edgehandles.start();
     },
 
     // degree
-    'click #remove-isolated-nodes' : function() {
+    'click #remove-isolated-nodes': function() {
         // var network = Template.instance().network.get().net;
         var isolated = network.elements("node[[degree = 0]]")
         network.remove(isolated);
@@ -61,5 +81,3 @@ Template.networkTools.events = {
 
 
 }
-
-

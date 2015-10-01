@@ -1,10 +1,12 @@
 Template.infobox.helpers({
 
-    // onSuccess: function () {
-    //     return function (res, val) {
-    //         Meteor.call("updateNameByType", Session.get('currentId'), Session.get('currentType'), val);
-    //     }
-    // },
+    comments: function() {
+        var type = Session.get('currentType') || "nodes",
+            id = Session.get('currentId') || "node-000";
+        var comments = Comments.find({"id" : id,  "type" : type }).fetch();
+        console.log(comments);
+        return comments
+    },
 
      currentSelection: function() {
         var id= Session.get('currentId'),
@@ -13,24 +15,24 @@ Template.infobox.helpers({
 
         console.log(id, type);
 
-        // console.log(Nodes);
        if( type == "node") {
             item = Nodes.findOne({"data.id" : id});
         } else if (type== "edge"){
             item = Edges.findOne({"data.id" : id});
         }
 
-        console.log(item);
-        var cleanData = [];
-        
+        // append
         if (item.data) {
-          for (d in item.data.data) {
-            cleanData.push(d + " : "+item.data.data[d])
-          }
+            if(item.data.data) delete(item.data.data.url)
+            item.info = item.data.data;
         };
-
-        item.info = cleanData;
 
         return item;
     }
 })
+
+Template.infobox.events= {
+    'click #closeInfoBox' : function(event){
+        $("#infoBox").css('visibility', 'hidden');
+    }
+};

@@ -1,81 +1,88 @@
 <template name="import">
-        <div class="row">
-        <h1>import <small>{{networkId}}</small></h1>
-        <form id="importForm">
-            <div class="form-group">
-                <label for="importType">Type</label>
-                <select class="form-control" name="layerType" id="layerType">
-                    <option value=""></option>
-                    <option value="nodes">Nodes</option>
-                    <option value="edges">Edges</option>
-                </select>
-            </div>
+    <div class="row">
+        <div class="col s10 offset-s1">
 
-            {{#if isEdges }}
-                <div class="form-inline">
-                    <div class="form-group">
+            <h1>import <small>{{networkId}}</small></h1>
+            <form id="importForm">
+
+                <div class="row">
+                    <div class="col s12">
+                        <label for="layerType">Type</label>
+                        <select class="browser-default" name="layerType" id="layerType">
+                            <option value="" selected>Choose a type</option>
+                            <option value="nodes">Nodes</option>
+                            <option value="edges">Edges</option>
+                        </select>
+                    </div>
+                </div>
+
+                {{#if isEdges }}
+                <div class="row">
+                    <div class="col s4">
                         <label for="srcField">Source</label>
-                        <select class="form-control" name="srcField" id="srcField">
+                        <select class="browser-default" name="srcField" id="srcField">
                             {{#each getDataFields}}
-                                <option value="{{this }}">{{this }}</option>
+                            <option value="{{this }}">{{this }}</option>
                             {{/each}}
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="col s4">
                         <label for="targetField">Target</label>
-                        <select class="form-control" name="targetField" id="targetField">
+                        <select class="browser-default " name="targetField" id="targetField">
                             {{#each getDataFields}}
-                                <option value="{{this }}">{{this }}</option>
+                            <option value="{{this }}">{{this }}</option>
                             {{/each}}
                         </select>
                     </div>
                 </div>
-            {{/if}}
-
-            {{#if isNodes }}
-                <div class="form-inline">
-                    <div class="form-group">
+                {{/if}} 
+                {{#if isNodes }}
+                <div class="row">
+                    <div class="col s3">
                         <label for="idField">ID</label>
-                        <select class="form-control" name="idField" id="idField">
+                        <select class='browser-default' name="idField" id="idField">
                             {{#each getDataFields}}
-                                <option value="{{this }}">{{this }}</option>
+                            <option value="{{this }}">{{this }}</option>
                             {{/each}}
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="add-geo-info">
-                            <input type="checkbox" checked="{{asLatLng}}" />
-                            Geo info
-                        </label>
+                    <div class="input-field col s3">
+                        <input type="checkbox" checked="{{ asLatLng }}" id="add-geo-info"  />
+                        <label for="add-geo-info">Geo info</label>
                     </div>
                     {{#if getAsLatLng}}
-                        <div class="form-group">
+                        <div class="col s3">
                             <label for="latField">Latitude</label>
-                            <select class="form-control" name="latField" id="latField">
+                            <select class="browser-default " name="latField" id="latField">
                                 {{#each getDataFields}}
-                                    <option value="{{this }}">{{this }}</option>
+                                <option value="{{this }}">{{this }}</option>
                                 {{/each}}
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="col s3">
                             <label for="lngField">Longitude</label>
-                            <select class="form-control" name="lngField" id="lngField">
+                            <select class="browser-default" name="lngField" id="lngField">
                                 {{#each getDataFields}}
-                                    <option value="{{this }}">{{this }}</option>
+                                <option value="{{this }}">{{this }}</option>
                                 {{/each}}
                             </select>
                         </div>
                     {{/if}}
                 </div>
-            {{/if}}
-            <div class="form-group">
-                <label for="layerData">Layer data</label>
-                <p class="help-block">Paste CSV data here (first line should be headers)</p>
-                <textarea class="form-control"  name="layerData" id="layerData" cols="30" rows="10"></textarea>
-            </div>
-            {{#if dataIsReady }}
-            <button id="submit-new-layer" type="submit" class="btn btn-primary pull-right">Create layer</button>
-            {{ /if }}
-        </form>
+                {{/if}}
+
+                <div class="row">
+                    <div class="col s12">
+                        <label for="layerData">Layer data - Paste CSV data here (first line should be headers)</label>
+                        <textarea class="textarea" name="layerData" id="layerData" cols="30" rows="10"></textarea>
+                        
+                    </div>
+                </div>
+
+                {{#if dataIsReady }}
+                <button id="submit-new-layer" type="submit" class="btn btn-primary pull-right">Create layer</button>
+                {{ /if }}
+            </form>
+        </div>
     </div>
 </template>

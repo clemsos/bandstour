@@ -2,16 +2,20 @@
     margin-left: 20px;
 }
 
-select {
-    display :block !important;
-}
-
 nav ul {
     margin-right: 20px !important;
 }
 
 .category{
 	word-wrap: break-word;
+}
+
+.toolbox {
+    position:absolute;
+}
+#closeInfoBox { 
+    cursor: pointer; 
+    cursor: hand; 
 }
 
 #map {

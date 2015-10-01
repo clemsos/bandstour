@@ -9,6 +9,7 @@ NetworkGraph = {
 
         this.net = cytoscape({
                 container: document.getElementById(_id),
+                hideLabelsOnViewport : true,
                 ready: function(){
 
                     // console.log("network ready");
@@ -18,13 +19,13 @@ NetworkGraph = {
                     // self.addQTip();
                     self.addCxtMenu();
                     self.addMouseBehaviours();
-                    self.addEdgehandles();
+                    // self.addEdgehandles();
                 },
                 // style
                 style: cytoscape.stylesheet()
                 .selector('node')
                     .style({
-                            'content': function( e ){ return e.data().data.name }, //e.data("data.name") },
+                            'content' : "",
                             'background-color': function( e ){
                                 return e.data("starred") ?  "yellow" : self.colors(e.data().data.country) 
                             },

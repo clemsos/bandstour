@@ -10,9 +10,10 @@ Template.network.rendered = function () {
     var artistId = this.data.networkId;
     console.log(this.data);
 
+    $("#infoBox").css('visibility', 'hidden'); // hide infobox by default
+
     // create graph// network.destroy();
     var network  = NetworkGraph.initNetwork("network");
-    Template.instance().network.set(network);
 
     // fetch and parse data
     var edges = Edges.find().fetch();
@@ -26,6 +27,7 @@ Template.network.rendered = function () {
     }
 
     if(network)  network.updateNetworkData(nodes,edges);
+    Template.instance().network.set(network);
 
     // layout function
     var changeLayout  = function (layoutName) {
@@ -33,6 +35,7 @@ Template.network.rendered = function () {
         // callback
         var savePositions = function () {
             console.log("update position ");
+
             //   for (var i = 0; i < net.nodes().length; i++) {
             //         var node = net.nodes()[i];
             //         Meteor.call("updateNodePosition", node.id(), node.position())
@@ -43,8 +46,6 @@ Template.network.rendered = function () {
                 name: layoutName,
                 stop: savePositions // callback on layoutstop
             });
-
-            // console.log(layout);
             layout.run();
         }
 
