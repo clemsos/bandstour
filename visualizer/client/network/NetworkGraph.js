@@ -13,13 +13,16 @@ NetworkGraph = {
                 ready: function(){
 
                     // console.log("network ready");
-                    // self.initNetworkData(); // load data when cy is ready
 
                     // add everything
                     // self.addQTip();
                     self.addCxtMenu();
                     self.addMouseBehaviours();
                     // self.addEdgehandles();
+                },
+                // load existing positions
+                layout: {
+                    name: 'preset'
                 },
                 // style
                 style: cytoscape.stylesheet()

@@ -4,7 +4,6 @@ Template.infobox.helpers({
         var type = Session.get('currentType') || "nodes",
             id = Session.get('currentId') || "node-000";
         var comments = Comments.find({"id" : id,  "type" : type }).fetch();
-        console.log(comments);
         return comments
     },
 
@@ -12,8 +11,6 @@ Template.infobox.helpers({
         var id= Session.get('currentId'),
             type = Session.get('currentType'),
             item = {};
-
-        console.log(id, type);
 
        if( type == "node") {
             item = Nodes.findOne({"data.id" : id});

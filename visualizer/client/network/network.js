@@ -15,18 +15,24 @@ Template.network.rendered = function () {
     // create graph// network.destroy();
     var network  = NetworkGraph.initNetwork("network");
 
-    // fetch and parse data
-    var edges = Edges.find().fetch();
-    var nodes = Nodes.find().fetch();
 
-    // console.log(edges, nodes);
-    console.log("network : ", artistId, nodes .length, "nodes", edges .length, "edges" );
+    // real-time
+    Tracker.autorun(function(){
+        // fetch and parse data
+        var edges = Edges.find().fetch();
+        var nodes = Nodes.find().fetch();
 
-    for (var i = 0; i <edges.length; i++) {
-        if(!edges[i].data.source || !edges[i].data.target) console.log(edges[i]);
-    }
+        // console.log(edges, nodes);
+        console.log("network : ", artistId, nodes .length, "nodes", edges .length, "edges" );
 
-    if(network)  network.updateNetworkData(nodes,edges);
+        for (var i = 0; i <edges.length; i++) {
+            if(!edges[i].data.source || !edges[i].data.target) console.log(edges[i]);
+        }
+
+        if(network)  network.updateNetworkData(nodes,edges);
+
+    });
+
     Template.instance().network.set(network);
 
     // layout function
@@ -35,12 +41,11 @@ Template.network.rendered = function () {
         // callback
         var savePositions = function () {
             console.log("update position ");
-
-            //   for (var i = 0; i < net.nodes().length; i++) {
-            //         var node = net.nodes()[i];
-            //         Meteor.call("updateNodePosition", node.id(), node.position())
-            //     }
-            }
+            var nodesLayout = network.net.nodes().map(function(node){
+                return { id : node.id(), position : node.position()};
+            });
+            Meteor.call("updateNodesPositions", nodesLayout);
+        }
 
             var layout = network.net.makeLayout({ 
                 name: layoutName,
