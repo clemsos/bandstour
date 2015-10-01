@@ -42,5 +42,15 @@ Meteor.methods({
             $set: { "data.starred": starred }
         });
     },
+    fetchNodes : function(edges) {
+    var nodeslist = edges.map(function(e) {
+            return { source :e.data.source , target :e.data.target};
+        })
+        .reduce(function(map, d, i, context) {
+            map[d.id] = map[d.id] ||  d;
+            map[d.id].count = (map[d.id].count || 0) + 1;
+            return map
+        }, {});
+    },
 
 });

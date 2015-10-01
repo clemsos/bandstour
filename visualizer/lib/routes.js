@@ -54,11 +54,11 @@ Router.route('/artists/:artistId/map', {
 
 Router.route('/artists/:networkId/nodes', {
     waitOn: function () {
-        return Meteor.subscribe('nodes', this.params.networkId)
+        return Meteor.subscribe('fetchNetworkNodes', this.params.networkId)
     },
     action: function () {
         if (!this.ready())  this.render("loading");
-        else this.render('nodes', { data : {"networkId" : this.params.networkId} });
+        else this.render('fetchNetworkNodes', { data : {"networkId" : this.params.networkId} });
     }
 });
 
@@ -83,7 +83,7 @@ Router.route('/artists/:artistId/network', {
     waitOn: function () {
         return [
             Meteor.subscribe('artist', this.params.artistId),
-            Meteor.subscribe('nodes', this.params.artistId),
+            Meteor.subscribe('fetchNetworkNodes', this.params.artistId),
             Meteor.subscribe('edges', this.params.artistId)
         ]
     },
