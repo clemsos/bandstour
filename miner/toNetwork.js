@@ -17,8 +17,8 @@ client.connect(url, function(err, db) {
     Edges = db.collection('edges');
 
     // clean everything
-    Nodes.drop();
-    Edges.drop();
+    // Nodes.drop();
+    // Edges.drop();
 
 
     // find all artists
@@ -32,7 +32,10 @@ client.connect(url, function(err, db) {
             return item.slug;
         });
 
-        //artistList = ["cannibal-corpse"];
+        // artistList = ["cannibal-corpse"];
+        // artistList = ["david-guetta"];
+        // artistList = ["foo-fighters"];
+        artistList = ["pneu"];
 
         // Initialize the Ordered Batch, SWITCHED TO ORDERED AS UNORDERED DOESN'T ACKNOWLEDGE WRITES!!!
         var nodesBatch = Nodes.initializeOrderedBulkOp();

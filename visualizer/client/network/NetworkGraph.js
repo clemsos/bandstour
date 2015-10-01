@@ -18,7 +18,7 @@ NetworkGraph = {
                     // self.addQTip();
                     self.addCxtMenu();
                     self.addMouseBehaviours();
-                    // self.addEdgehandles();
+                    self.addEdgehandles();
                 },
                 // load existing positions
                 layout: {
