@@ -59,3 +59,21 @@ Meteor.publish('edges', function (artistId) {
     console.log(edges.count(), "edges");
     return edges;
 });
+
+Meteor.publish('fetchNetworkNodes', function (artistId) {
+    mapnodes2 =[];
+    var edges = Edges.find({'networkId' : artistId});
+    var fetchNetworkNodes = edges.map(function(e) {
+            return { nodeid1 :e.data.source , nodeid2 :e.data.target};
+        }).reduce(function(something, nodeids,ctr,context2){
+
+        if (mapnodes2.indexOf(nodeids.nodeid1)<0){mapnodes2.push(nodeids.nodeid1);}       
+        if (mapnodes2.indexOf(nodeids.nodeid2)<0){mapnodes2.push(nodeids.nodeid2);}       
+         //   console.log("mapnodes2",mapnodes2);
+
+           return  mapnodes2;
+
+        });
+        console.log("WE ARE HERE");
+        console.log(mapnodes2.length, "nodes");
+});
