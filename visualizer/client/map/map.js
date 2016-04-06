@@ -209,6 +209,7 @@ console.log("collectionedges",collectionedges);
       point: projectPoint
     }),
     path = d3.geo.path().projection(transform);
+  var popup = L.popup();
 
   // radius scale
   var radius = d3.scale.linear()
@@ -240,17 +241,11 @@ console.log("collectionedges",collectionedges);
     .style("stroke", "none")
     .style("opacity", .8);
 
-  d3.selectAll("circle").on('mouseover', function(d) {
-    var infos = "";
-    for (var p in d.properties) {
-      infos += p + ": " + d.properties[p] + "\n";
-    }
-    console.log(infos);
-  });
+
 
 
   // features des edges
-  var gradient = svg.append("defs")
+/*  var gradient = svg.append("defs")
     .append("linearGradient")
     .attr("id", "gradient")
     .attr("x1", "0%")
@@ -267,7 +262,7 @@ console.log("collectionedges",collectionedges);
   gradient.append("stop")
     .attr("offset", "100%")
     .attr("stop-color", "#533")
-    .attr("stop-opacity", 1);
+    .attr("stop-opacity", 1);*/
 
   /*    var marker = svg.append("defs")
         .append("marker")
@@ -300,12 +295,38 @@ console.log("collectionedges",collectionedges);
     /*.style('opacity', .8);*/
     //TODO:IMPORT TIME TO NEXT GIG SELECT IF SAME OR DIFFERENT TOUR BY COMPARING IF UNDER 10 DAYS , IF NOT SAME IF SO: DIFFERENT
      console.log( "featureedges", featureedges );
+
+//POPUP MECANISM But we need a switch for choosing between the 2
+  d3.selectAll("circle").on('mouseover', function(d) {
+       var infos = "";
+       for (var p in d.properties) {
+         infos += p + ": " + d.properties[p] + "\n";
+       }
+/*     console.log("d",d)*/
+       popup
+           .setLatLng(d.geometry.coordinates)
+           .setContent(infos)
+           .openOn(map);
+console.log(d.geometry.coordinates);
+       console.log(infos);
+     });
+
   d3.selectAll('line').on('mouseover', function(d) {
     var infos = '';
     // linestring
     for (var p in d.properties) {
       infos += p + ': ' + d.properties[p] + '\n';
     }
+    map.on('click', function(e) {
+      popup
+          .setLatLng(e.latlng)
+          .setContent(infos)
+          .openOn(map);
+    });
+
+
+
+    console.log(infos);
     // console.log( infos );
   });
 
