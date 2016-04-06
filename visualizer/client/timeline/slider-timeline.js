@@ -61,6 +61,9 @@ Template.timeSlider.helpers({
     },
     endFormatted : function() {
        return moment(Session.get('slider')[1]).format('YYYY MM DD');  ;
+    },
+    stepFormatted : function() {
+       return (Math.round((moment(Session.get('step'))/ 3600000))+" hrs")  ;
     }
 
 });
