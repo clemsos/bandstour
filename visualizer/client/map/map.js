@@ -6,7 +6,7 @@
 Template.map.rendered = function() {
   // session vars
   Session.set('minShowsPerVenue', 0);
-
+var hhh = 0;
   var maxRadius = 25;
   //  parse data
   var artist = Artists.findOne();
@@ -73,6 +73,7 @@ Template.map.rendered = function() {
 
   // console.log("centralité géo", bandgravitycenterlat, bandgravitycenterlong);
   var q = [];
+
   q.push(turf.point(
     [bandgravitycenterlat, bandgravitycenterlong], {
       'name': artist.name,
@@ -91,20 +92,22 @@ Template.map.rendered = function() {
 
   /*-----GeoJSON features for Edges-----------*/
   var r = [];
-  h = 0;
+
   edges = [];
+  console.log(artist);
   Object.keys(artist.gigs).forEach(function(id) {
 
-    /*  console.log(artist.gigs[id]);
-      console.log(artist.gigs[id - 1]);*/
-    if (h == 0 || h >= artist.gigs.length) {
-      h = h + 1;
+    console.log(artist.gigs[id]);
+      console.log(artist.gigs[id - 1]);
+    if (hhh == 0) {
+      hhh = hhh + 1;
+      console.log("THERE////////////////");
     } else {
-
     /*  console.log("h", h)
       console.log("artist.gigs[id].datetime", artist.gigs[id].datetime)*/
         //USELESS IF HEREBUT HEy... KEpT FOR BACKU
-      if ((typeof yieldTimeScaleStart == 'undefined') || (yieldTimeScaleStart <= artist.gigs[id].datetime && yieldTimeScaleEnd >= artist.gigs[id].datetime)) {
+      /*if ((typeof yieldTimeScaleStart == 'undefined') || (yieldTimeScaleStart <= artist.gigs[id].datetime && yieldTimeScaleEnd >= artist.gigs[id].datetime))
+      {*/
         var coordsEdge = {
           id: id,
           datetime: artist.gigs[id - 1].datetime,
@@ -126,13 +129,14 @@ Template.map.rendered = function() {
 
 
         edges.push(coordsEdge);
-      }
+      /*}*/
 
       /*  console.log("edges",edges)
         console.log("edges",coordsEdge)*/
 
-      if (h = 0 || h >= artist.gigs.length || (!isValidCoordinate(coordsEdge.sourcelat, coordsEdge.sourcelong)) && (!isValidCoordinate(coordsEdge.targetlat, coordsEdge.targetlong))) {
-        h = h + 1;
+      if (hhh == 0 || hhh >= artist.gigs.length || (!isValidCoordinate(coordsEdge.sourcelat, coordsEdge.sourcelong)) && (!isValidCoordinate(coordsEdge.targetlat, coordsEdge.targetlong)))
+      {
+        hhh = hhh + 1;
         return;
       } else {
         // parse GeoJSON  point
@@ -321,10 +325,10 @@ Edgesetup = function () {  g3.selectAll("line").attr("opacity", function(d) {
           return;
 
         } else {
-          console.log("d.properties.datetime",d.properties.datetime);
+          /*console.log("d.properties.datetime",d.properties.datetime);
           console.log("TimeStart",TimeStart);
           console.log("TimeEnd",TimeEnd);
-          console.log("d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd",d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd);
+          console.log("d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd",d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd);*/
           return (d.properties.datetime >= Session.get('TimeStart') && d.properties.datetime <= Session.get('TimeEnd')) ? 1 : 0
         }
     });
