@@ -224,7 +224,7 @@ console.log("collectionedges",collectionedges);
     .data(collection.features).enter()
     .append("circle")
     .attr("r", function(d) {
-      return radius(d.properties.count);
+      return Math.pow(radius(d.properties.count),4/5);
     })
     .style("fill", "red")
     .style("stroke", "none")
