@@ -290,7 +290,7 @@ var hhh = 0;
     //  .style('stroke', 'yellow')
     .style('stroke', "url(#gradient)")
     /*      .style('marker-end',"url(#arrow)")*/
-    .style('stroke-width', '4')
+    .style('stroke-width', '2')
     /*.style('opacity', .8);*/
   //TODO:IMPORT TIME TO NEXT GIG SELECT IF SAME OR DIFFERENT TOUR BY COMPARING IF UNDER 10 DAYS , IF NOT SAME IF SO: DIFFERENT
   // console.log( "featureedges", featureedges );
