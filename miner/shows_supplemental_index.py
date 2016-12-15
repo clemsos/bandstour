@@ -5,7 +5,7 @@ import musicbrainzngs
 import arrow
 from datetime import datetime
 from pymongo import MongoClient
-
+from collections import defaultdict
 from dateutil import parser
 
 # setup mongo
@@ -25,7 +25,10 @@ DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 DATETIME_FORMAT_FOR_MSBNS ='%Y-%m-%d'
 #retrieve label for each artist before a tour starts
 for artist in db.minedArtists.find() :
-
+                    #print db.minedArtists[artist]
+                    #print artist
+                    labels_dict= defaultdict(list)
+                    labels_dict["id"]=[]
                     if  artist["mbid"] is None:
                         print ("NOMBID for",artist["name"])
 
@@ -41,27 +44,52 @@ for artist in db.minedArtists.find() :
 
                         artist["releases"]=(musicbrainzngs.browse_releases( artist["mbid"], release_type=["album"], includes=["labels"] ))
                         #artist["release_groups"]=(musicbrainzngs.browse_release_groups( artist["mbid"],release_type=["album"], includes=["tags"]))
-                        print artist["releases"]
+                        #print "artist",artist
                         print "...."
                         #print artist["release_groups"]
+
                         for release in  artist["releases"]["release-list"]:
-                            print release
+                            #print release
                             if  release.has_key("release-event-list"):
-                                print "title",release["title"]
+                                print "artist_name:",artist["name"]
+                                print "albumtitle:",release["title"]
+                                print "albumid:",release["id"]
                                 #print "label-list",release["label-info-list"]
                                 for label in release["label-info-list"]:
-                                    print "label",label["label"]["sort-name"]
-                                    print "labelid",label["label"]["id"]
+                                    print "label:",label["label"]["sort-name"]
+                                    print "labelid:",label["label"]["id"]
+                                    key= 0
+                                    if label["label"]["id"] not in labels_dict["id"]:
+                                        labels_dict["id"]=label["label"]["id"]
+                                        labels_dict[label["label"]["id"]].append({"label_name" :label["label"]["sort-name"]})
+                                        labels_dict[label["label"]["id"]].append({"label_id" :label["label"]["id"]})
+                                        # labels_dict[key].append(label["label"]["id"])
+                                        # artist["labels"]["name"]=label["label"]["sort-name"]
+                                #if     release["id"] not in artist["labels"]["titles"]:
+
+
+                                    labels_dict[label["label"]["id"]].append(key)
+                                    labels_dict[label["label"]["id"][key]].append({"album_id":release["id"]})
+                                    labels_dict[label["label"]["id"][key]].append({"album_title":release["title"]})
+                                    # artist["labels"]["titles"]=release["id"]
+                                    # artist["labels"]["titles"]["name"]=release["title"]
                                 releDate=release["release-event-list"][0]
                                 #print "releDate", release["release-event-list"][0]
                                 if  releDate.has_key("date"):
-                                    print "date", releDate["date"]
+                                    dateRel=arrow.get(releDate["date"])
+                                    print "date:", dateRel.strftime('%Y-%m-%d')
+                                    # artist["labels"]["titles"]["date"]=dateRel.strftime('%Y-%m-%d')
+                                    labels_dict[label["label"]["id"][key]].append({"album_date":dateRel.strftime('%Y-%m-%d')})
+                                    key = key +1
+                                    #NOW we make a nice lightweight object to push to mongo
+
                                 else:
                                     print "NORELEASEDATE2"
+                                    key = key +1
                             else:
                                 print "NORELEASEDATE"
 
-
+                            print labels_dict
                             # print ("title",release["title"])
                             # for date in release["release-event-list"]:
                             #     print date["date"]
