@@ -5,10 +5,10 @@ Template.bargraphTimeline.created = function(){
 var parseBarGraphDate = function(gigs, timescale) {
     // parse data w map reduce
     var datesCount = gigs
-            .map( function (d){ 
+            .map( function (d){
                 return moment(d.datetime).startOf(timescale).valueOf();
             })
-            .reduce( function (map, date){ 
+            .reduce( function (map, date){
                 map[date] = ( map[date] || 0 ) +1;
                 return map
             }, {});
@@ -21,7 +21,7 @@ var parseBarGraphDate = function(gigs, timescale) {
 
 
 Template.bargraphTimeline.rendered = function() {
-    Session.setDefault("timescale", "year"); 
+    Session.setDefault("timescale", "year");
 
     var settings = {
         div:  this.find('#bargraph-timeline'),
@@ -41,7 +41,8 @@ Template.bargraphTimeline.rendered = function() {
     // parse data
     var artist = Artists.findOne();
     var data = parseBarGraphDate(artist.gigs, timescale);
-
+    console.log("artist1",artist);
+    console.log("timescale1",timescale);
     // draw graph
     timeBarGraph.draw(data, timescale);
     Template.instance().timeBarGraph.set(timeBarGraph);
@@ -57,10 +58,20 @@ Template.bargraphTimeline.helpers({
     start : function() {
         if(Template.instance().timeBarGraph.get())
             Template.instance().timeBarGraph.get().setStart(Session.get('slider')[0]);
+
+
     },
-    end : function() { 
-        if(Template.instance().timeBarGraph.get()) 
+    end : function() {
+        if(Template.instance().timeBarGraph.get())
             Template.instance().timeBarGraph.get().setEnd(Session.get('slider')[1]);
+
+
+/*var SVGMAPP= Session.get('SVGMAP');*/
+            /*var selectedCategories = SVGMAPP.selectAll("g3")*//*.filter(function(d) { return d.properties.datetime  >= yieldTimeScaleStart && d.properties.datetime <= yieldTimeScaleEnd })*/;
+/*            console.log("SVGMAPP",SVGMAPP);*/
+          /*  console.log("selectedCategories",selectedCategories)*/
+/*console.log(g);*/
+
     },
 
 });
@@ -74,6 +85,9 @@ Template.bargraphTimeline.events({
 
         // parse data
         var artist = Artists.findOne();
+        console.log("artist",artist);
+        console.log("timescale",timescale);
+
         var data = parseBarGraphDate(artist.gigs, timescale);
 
         // draw graph

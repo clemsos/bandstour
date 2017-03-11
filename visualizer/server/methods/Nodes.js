@@ -15,12 +15,22 @@ Meteor.methods({
 
     //update coords in DB 
     updateNodePosition : function(nodeId, position){
+
         var node = Nodes.findOne({ "data.id" : nodeId });
         Nodes.update({
             _id: node._id
         }, {
             $set: { position: position }
         });
+    },
+
+    // TODO : improve batch update of nodes
+    // update coords in DB for bunch of nodes (useful to save network layout changes) 
+    updateNodesPositions : function(nodes) {
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            Meteor.call("updateNodePosition", node.id, node.position)
+        }
     },
 
     lockNode : function(nodeId, position){
@@ -41,6 +51,16 @@ Meteor.methods({
         }, {
             $set: { "data.starred": starred }
         });
+    },
+    fetchNodes : function(edges) {
+    var nodeslist = edges.map(function(e) {
+            return { source :e.data.source , target :e.data.target};
+        })
+        .reduce(function(map, d, i, context) {
+            map[d.id] = map[d.id] ||  d;
+            map[d.id].count = (map[d.id].count || 0) + 1;
+            return map
+        }, {});
     },
 
 });

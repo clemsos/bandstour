@@ -9,10 +9,10 @@ NetworkGraph = {
 
         this.net = cytoscape({
                 container: document.getElementById(_id),
+                hideLabelsOnViewport : true,
                 ready: function(){
 
                     // console.log("network ready");
-                    // self.initNetworkData(); // load data when cy is ready
 
                     // add everything
                     // self.addQTip();
@@ -20,11 +20,15 @@ NetworkGraph = {
                     self.addMouseBehaviours();
                     self.addEdgehandles();
                 },
+                // load existing positions
+                layout: {
+                    name: 'preset'
+                },
                 // style
                 style: cytoscape.stylesheet()
                 .selector('node')
                     .style({
-                            'content': function( e ){ return e.data().data.name }, //e.data("data.name") },
+                            'content' : "",
                             'background-color': function( e ){
                                 return e.data("starred") ?  "yellow" : self.colors(e.data().data.country) 
                             },

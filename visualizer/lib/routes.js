@@ -42,13 +42,6 @@ Router.route('/artists/:artistId/timeline', {
     }
 });
 
-Router.route('/artists/:networkId/import', {
-    action: function () {
-        if (!this.ready())  this.render("loading");
-        else this.render('import', { data : {"networkId" : this.params.networkId, "type" : "nodes" } });
-    }
-});
-
 Router.route('/artists/:artistId/map', {
     waitOn: function () {
         return Meteor.subscribe('artist', this.params.artistId)
@@ -76,6 +69,13 @@ Router.route('/artists/:networkId/edges', {
     action: function () {
         if (!this.ready())  this.render("loading");
         else this.render('edges', { data : {"networkId" : this.params.networkId} });
+    }
+});
+
+Router.route('/artists/:networkId/import', {
+    action: function () {
+        if (!this.ready())  this.render("loading");
+        else this.render('import', { data : {"networkId" : this.params.networkId, "type" : "nodes" } });
     }
 });
 

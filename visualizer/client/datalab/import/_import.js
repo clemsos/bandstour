@@ -1,3 +1,6 @@
+Template.import.rendered = function() {
+};
+
 Template.import.onCreated( function() {
     Session.set('newLayerDataReady', false);
     Session.set('dataFields', []);
@@ -8,10 +11,10 @@ Template.import.helpers({
         return Session.get('newLayerType');
     },
     isEdges : function() {
-        return Session.get('newLayerType') === "edges";
+        return Session.get('newLayerType') === "edges" && Session.get('newLayerDataReady');
     },
     isNodes : function() {
-        return Session.get('newLayerType') === "nodes";
+        return Session.get('newLayerType') === "nodes"  && Session.get('newLayerDataReady');
     },
     dataIsReady : function() {
         return Session.get('newLayerDataReady');
@@ -63,8 +66,8 @@ Template.import.events = {
         }
     },
 
-    "change .add-geo-info input": function (event) {
-      Session.set("asLatLng", event.target.checked);
+    "change #add-geo-info": function (event) {
+        Session.set("asLatLng", event.target.checked);
     },
 
     "submit #importForm" : function(e) {
@@ -138,8 +141,6 @@ Template.import.events = {
             if (type == "nodes" ) return makeNode(self.networkId, d[idField], lat, lng, 0, 0, d);
             else if (type == "edges") return makeEdge(self.networkId, d[srcField], d[targetField], d);
         });
-        
-        // console.log(parsedData);
 
         /// TODO : display loader
         if(type == "edges") {
