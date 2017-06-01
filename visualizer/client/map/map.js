@@ -568,13 +568,20 @@ d3.selectAll('circle').on('mouseover', function(d) {
     infos += p + ": " + d.properties[p] + "<br/> ";
 
   }
-  infos += slugifyForGoogle(d.properties.name)
-  div.transition()
-      .duration(200)
+  infos +=' <a href=https://wwww.google.fr/search?q='+ slugifyForGoogle(d.properties.name)+ ' target="_blank"> find '+d.properties.name+' on google</a>'
+console.log(infos);
+
+  div
+  //.transition()
+      //.duration(200)
       .style("opacity", .9);
   div .html(infos)
       .style("left", (d3.event.pageX) + "px")
-      .style("top", (d3.event.pageY - 28) + "px");
+      .style("top", (d3.event.pageY - 28) + "px")
+      .on('click', function(dd){
+      //   //TRYING ANOTHER QWAY FOR THE LINK
+       var win = window.open("https://google.fr/search?q="+slugifyForGoogle(d.properties.name), '_blank');
+       })
   })
 
   d3.selectAll('line').on('click', function(d) {
@@ -707,6 +714,14 @@ Template.map.events({
 
     firstpolyline.addTo(template.map);
   }
+  // //NOT WORKING WAY TO OPEN LINKS
+  // 'click a[target=_blank]' : function(e){
+  //     var artist = Artists.findOne();
+  //     console.log("I AM CLICKED IT IS REAL");
+  //     var win = window.open("https://google.fr/search?q="+slugifyForGoogle(), '_blank');
+  //   //win.focus();
+ // }
+
 });
 
 
