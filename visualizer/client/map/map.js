@@ -568,7 +568,8 @@ d3.selectAll('circle').on('mouseover', function(d) {
     infos += p + ": " + d.properties[p] + "<br/> ";
 
   }
-  infos +=' <a href=https://www.google.fr/search?q='+ slugifyForGoogle(d.properties.name)+ ' target="_blank"> find '+d.properties.name+' on google</a>'
+  infos +=' <a href=https://www.google.fr/search?q='+ slugifyForGoogle(d.properties.name)+ ' target="_blank"> find '+d.properties.name+' on google</a>'+ "<br/> "
+  infos +=' <a href=https://www.google.fr/search?q='+ slugifyForGoogle(d.properties.name+" owner")+ ' target="_blank"> find '+d.properties.name+' owner on google</a>'
 console.log(infos);
 
   div
