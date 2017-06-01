@@ -1,3 +1,6 @@
+
+
+
 Template.map.rendered = function() {
   // session vars
   Session.set('minShowsPerVenue', 0);
@@ -186,15 +189,236 @@ console.log("collectionedges",collectionedges);
 
   // setup map
   L.Icon.Default.imagePath = 'packages/bevanhunt_leaflet/images';
-  var url = 'http://tile.stamen.com/toner/{z}/{x}/{y}.png';
-  var attrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-  var layer = new L.TileLayer(url, {
-    minZoom: 2,
-    maxZoom: 16,
-    attribution: attrib
+
+//http://leafletjs.com/examples/layers-control/
+
+//HERE STARTS THE MAP BACKGROUND LIST
+  var OpenStreetMap_Mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  	maxZoom: 19,
+  	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   });
-  var map = L.map('map').setView([51.505, -0.09], 6);
-  map.addLayer(layer);
+
+  var OpenTopoMap = L.tileLayer('http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+  	maxZoom: 17,
+  	attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+  });
+
+  var Stamen_Toner = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 20,
+	ext: 'png'
+});
+
+var Stamen_TonerLite = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 20,
+	ext: 'png'
+});
+
+var Esri_WorldImagery = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+var Esri_WorldTerrain = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, TANA, DeLorme, and NPS',
+	maxZoom: 13
+});
+
+var NASAGIBS_ViirsEarthAtNight2012 = L.tileLayer('http://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+	attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+	bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+	minZoom: 1,
+	maxZoom: 8,
+	format: 'jpg',
+	time: '',
+	tilematrixset: 'GoogleMapsCompatible_Level'
+});
+
+
+
+var CartoDB_PositronNoLabels = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+	subdomains: 'abcd',
+	maxZoom: 19
+});
+
+
+//END OF MAPS BACKGROUND
+
+////HERE ARE OVERLAYS
+
+
+
+
+// https: also suppported.
+var Stamen_TonerLines = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}.{ext}', {
+attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+subdomains: 'abcd',
+minZoom: 0,
+maxZoom: 20,
+ext: 'png'
+});
+// https: also suppported.
+var Stamen_TonerLabels = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}.{ext}', {
+attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+subdomains: 'abcd',
+minZoom: 0,
+maxZoom: 20,
+ext: 'png'
+});
+var OpenWeatherMap_Wind = L.tileLayer('http://{s}.tile.openweathermap.org/map/wind/{z}/{x}/{y}.png', {
+maxZoom: 19,
+attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
+opacity: 0.5
+});
+// https: also suppported.
+var NASAGIBS_ModisTerraSnowCover = L.tileLayer('http://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_Snow_Cover/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+minZoom: 1,
+maxZoom: 8,
+format: 'png',
+time: '',
+tilematrixset: 'GoogleMapsCompatible_Level',
+opacity: 0.75
+});
+// https: also suppported.
+var NASAGIBS_ModisTerraAOD = L.tileLayer('http://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_Aerosol/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+minZoom: 1,
+maxZoom: 6,
+format: 'png',
+time: '',
+tilematrixset: 'GoogleMapsCompatible_Level',
+opacity: 0.75
+});
+// https: also suppported.
+var NASAGIBS_ModisTerraChlorophyll = L.tileLayer('http://map1.vis.earthdata.nasa.gov/wmts-webmerc/MODIS_Terra_Chlorophyll_A/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
+attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
+minZoom: 1,
+maxZoom: 7,
+format: 'png',
+time: '',
+tilematrixset: 'GoogleMapsCompatible_Level',
+opacity: 0.75
+});
+var JusticeMap_income = L.tileLayer('http://www.justicemap.org/tile/{size}/income/{z}/{x}/{y}.png', {
+attribution: '<a href="http://www.justicemap.org/terms.php">Justice Map</a>',
+size: 'county',
+bounds: [[14, -180], [72, -56]]
+});
+var JusticeMap_americanIndian = L.tileLayer('http://www.justicemap.org/tile/{size}/indian/{z}/{x}/{y}.png', {
+attribution: '<a href="http://www.justicemap.org/terms.php">Justice Map</a>',
+size: 'county',
+bounds: [[14, -180], [72, -56]]
+});
+var JusticeMap_asian = L.tileLayer('http://www.justicemap.org/tile/{size}/asian/{z}/{x}/{y}.png', {
+attribution: '<a href="http://www.justicemap.org/terms.php">Justice Map</a>',
+size: 'county',
+bounds: [[14, -180], [72, -56]]
+});
+var JusticeMap_black = L.tileLayer('http://www.justicemap.org/tile/{size}/black/{z}/{x}/{y}.png', {
+attribution: '<a href="http://www.justicemap.org/terms.php">Justice Map</a>',
+size: 'county',
+bounds: [[14, -180], [72, -56]]
+});
+var JusticeMap_hispanic = L.tileLayer('http://www.justicemap.org/tile/{size}/hispanic/{z}/{x}/{y}.png', {
+attribution: '<a href="http://www.justicemap.org/terms.php">Justice Map</a>',
+size: 'county',
+bounds: [[14, -180], [72, -56]]
+});
+var JusticeMap_multi = L.tileLayer('http://www.justicemap.org/tile/{size}/multi/{z}/{x}/{y}.png', {
+attribution: '<a href="http://www.justicemap.org/terms.php">Justice Map</a>',
+size: 'county',
+bounds: [[14, -180], [72, -56]]
+});
+var JusticeMap_nonWhite = L.tileLayer('http://www.justicemap.org/tile/{size}/nonwhite/{z}/{x}/{y}.png', {
+attribution: '<a href="http://www.justicemap.org/terms.php">Justice Map</a>',
+size: 'county',
+bounds: [[14, -180], [72, -56]]
+});
+var JusticeMap_white = L.tileLayer('http://www.justicemap.org/tile/{size}/white/{z}/{x}/{y}.png', {
+attribution: '<a href="http://www.justicemap.org/terms.php">Justice Map</a>',
+size: 'county',
+bounds: [[14, -180], [72, -56]]
+});
+var JusticeMap_plurality = L.tileLayer('http://www.justicemap.org/tile/{size}/plural/{z}/{x}/{y}.png', {
+attribution: '<a href="http://www.justicemap.org/terms.php">Justice Map</a>',
+size: 'county',
+bounds: [[14, -180], [72, -56]]
+});
+
+
+
+
+
+
+
+////END OF OVERLAYS
+
+
+
+
+
+
+
+
+
+  //var url = 'http://tile.stamen.com/toner/{z}/{x}/{y}.png';
+  //var attrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+  //var layer = new L.TileLayer(url, {
+//    minZoom: 2,
+//    maxZoom: 16,
+//    attribution: attrib
+//  });
+  var baseMaps = {
+  "OpenStreetMap_Mapnik" : OpenStreetMap_Mapnik,
+  "OpenTopoMap" : OpenTopoMap,
+  "Stamen_Toner" : Stamen_Toner,
+  "Stamen_TonerLite" : Stamen_TonerLite,
+  "Esri_WorldImagery" : Esri_WorldImagery,
+  "Esri_WorldTerrain" : Esri_WorldTerrain,
+  "NASAGIBS_ViirsEarthAtNight2012"   : NASAGIBS_ViirsEarthAtNight2012,
+  "CartoDB_PositronNoLabels": CartoDB_PositronNoLabels
+  };
+
+var maplayers ={
+  "Stamen_TonerLines": Stamen_TonerLines,
+  "Stamen_TonerLabels": Stamen_TonerLabels,
+  "OpenWeatherMap_Wind": OpenWeatherMap_Wind,
+  "NASAGIBS_ModisTerraSnowCover": NASAGIBS_ModisTerraSnowCover,
+  "NASAGIBS_ModisTerraAOD": NASAGIBS_ModisTerraAOD,
+  "NASAGIBS_ModisTerraChlorophyll": NASAGIBS_ModisTerraChlorophyll,
+  "JusticeMap_income": JusticeMap_income,
+  "JusticeMap_americanIndian": JusticeMap_americanIndian,
+  "JusticeMap_asian": JusticeMap_asian,
+  "JusticeMap_black": JusticeMap_black,
+  "JusticeMap_hispanic": JusticeMap_hispanic,
+  "JusticeMap_multi": JusticeMap_multi,
+  "JusticeMap_nonWhite": JusticeMap_nonWhite,
+  "JusticeMap_white": JusticeMap_white,
+  "JusticeMap_plurality": JusticeMap_plurality
+
+}
+
+
+
+  var map = L.map('map', {
+      center: [51.505, -0.09],
+      zoom: 6,
+      layers: [CartoDB_PositronNoLabels, Stamen_TonerLines,Stamen_TonerLabels ]
+  });
+
+  //var map = L.map('map').setView([51.505, -0.09], 6);
+  L.control.scale().addTo(map);
+L.control.layers(baseMaps, maplayers).addTo(map);
+
+//  map.addLayer(layer);
 
   var svg = d3.select("#map").append("svg")
     .style("position", "absolute")
@@ -209,7 +433,8 @@ console.log("collectionedges",collectionedges);
       point: projectPoint
     }),
     path = d3.geo.path().projection(transform);
-  var popup = L.popup();
+
+  var popup = L.popup({'className' : 'leaflet-control leaflet-control-container leaflet-bar'});
 
   // radius scale
   var radius = d3.scale.linear()
@@ -296,73 +521,77 @@ console.log("collectionedges",collectionedges);
     //TODO:IMPORT TIME TO NEXT GIG SELECT IF SAME OR DIFFERENT TOUR BY COMPARING IF UNDER 10 DAYS , IF NOT SAME IF SO: DIFFERENT
      console.log( "featureedges", featureedges );
 
-//POPUP MECANISM But we need a switch for choosing between the 2
-  d3.selectAll("circle").on('mouseover', function(d) {
-       var infos = "";
-       for (var p in d.properties) {
-         infos += p + ": " + d.properties[p] + "\n";
-       }
-/*     console.log("d",d)*/
-       popup
-           .setLatLng(d.geometry.coordinates)
-           .setContent(infos)
-           .openOn(map);
-console.log(d.geometry.coordinates);
-       console.log(infos);
-     });
 
-  d3.selectAll('line').on('mouseover', function(d) {
-    var infos = '';
-    // linestring
+     ///SELECTOR FOR THE EDGES
+     if (!initialRead || initialRead == 0) {
+       var initialRead = "1";
+       Session.set('TimeStart', new Date(Session.get('min')));
+       Session.set('TimeEnd', new Date(Session.get('max')));
+       console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+     }
+
+     var TimeStart = Session.get('TimeStart');
+     var TimeEnd = Session.get('TimeEnd');
+
+
+     Edgesetup = function() {
+       g3.selectAll("line").attr("opacity", function(d) {
+         /*        console.log("d", d);*/
+
+         if (typeof d.properties.datetime == 'undefined') {
+           console.log("dERROR", d)
+           return;
+
+         } else {
+           /*console.log("d.properties.datetime",d.properties.datetime);
+           console.log("TimeStart",TimeStart);
+           console.log("TimeEnd",TimeEnd);
+           console.log("d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd",d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd);*/
+           return (d.properties.datetime >= Session.get('TimeStart') && d.properties.datetime <= Session.get('TimeEnd')) ? 1 : 0
+         }
+       });
+     }
+
+     Edgesetup();
+     // define projection
+
+     //
+    //  //POPUP MECANISM
+///NEW POPUP/TOOLLTIP USING D3 FOR SOLVING THE Z INDEX ISSUE
+       var div = d3.select("body").append("div")
+           .attr("class", "tooltip")
+           .style("opacity", 0);
+d3.selectAll('circle').on('mouseover', function(d) {
+  var infos = "";
+  console.log(d.properties.name);
+  for (var p in d.properties) {
+    infos += p + ": " + d.properties[p] + "<br/> ";
+
+  }
+  infos += slugifyForGoogle(d.properties.name)
+  div.transition()
+      .duration(200)
+      .style("opacity", .9);
+  div .html(infos)
+      .style("left", (d3.event.pageX) + "px")
+      .style("top", (d3.event.pageY - 28) + "px");
+  })
+
+  d3.selectAll('line').on('click', function(d) {
+    var infos = "";
     for (var p in d.properties) {
-      infos += p + ': ' + d.properties[p] + '\n';
+      infos += p + ": " + d.properties[p] + "<br/> ";
     }
-    map.on('click', function(e) {
-      popup
-          .setLatLng(e.latlng)
-          .setContent(infos)
-          .openOn(map);
-    });
+    div.transition()
+        .duration(200)
+        .style("opacity", .9);
+    div .html(infos)
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+    })
 
 
 
-    console.log(infos);
-    // console.log( infos );
-  });
-
-
-  ///SELECTOR FOR THE EDGES
-  if (!initialRead || initialRead == 0) {
-    var initialRead = "1";
-    Session.set('TimeStart', new Date(Session.get('min')));
-    Session.set('TimeEnd', new Date(Session.get('max')));
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-  }
-
-  var TimeStart = Session.get('TimeStart');
-  var TimeEnd = Session.get('TimeEnd');
-
-
-  Edgesetup = function() {
-    g3.selectAll("line").attr("opacity", function(d) {
-      /*        console.log("d", d);*/
-
-      if (typeof d.properties.datetime == 'undefined') {
-        console.log("dERROR", d)
-        return;
-
-      } else {
-        /*console.log("d.properties.datetime",d.properties.datetime);
-        console.log("TimeStart",TimeStart);
-        console.log("TimeEnd",TimeEnd);
-        console.log("d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd",d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd);*/
-        return (d.properties.datetime >= Session.get('TimeStart') && d.properties.datetime <= Session.get('TimeEnd')) ? 1 : 0
-      }
-    });
-  }
-
-  Edgesetup();
-  // define projection
 
 
   function resetView() {
@@ -443,6 +672,17 @@ var getRandomColor = function() {
   }
   return color;
 };
+
+
+function slugifyForGoogle( text ) {
+    return text.toString( ).toLowerCase( )
+        .replace( /\s+/g, '\+' ) // Replace spaces with +
+        .replace( /\+\++/g, '\+' ) // Replace multiple + with single +
+        .replace( /^\++/, '' ) // Trim + from start of text
+        .replace( /\++$/, '' ); // Trim + from end of text
+}
+
+
 
 Template.map.events({
   'click #showVenues': function(e) {
