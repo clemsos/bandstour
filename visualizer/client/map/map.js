@@ -21,8 +21,14 @@ Template.map.rendered = function() {
   /*console.log(artist.gigs)
   console.log(venues)
 */
+//LOAD THE LIVENATION VENUE JSON
+ myjson = HTTP.get(Meteor.absoluteUrl("/JSON_LIVENATION_VENUE.json"), function(err,result){
+    console.log(result.content);
+    return result.content
+});
   // GeoJSON features
   var features = [];
+
 
 
   ///init gravitycenter calculation
@@ -446,15 +452,34 @@ L.control.layers(baseMaps, maplayers).addTo(map);
     ])
     .range([5, maxRadius]);
 
-  var feature = g.selectAll("circle")
-    .data(collection.features).enter()
-    .append("circle")
-    .attr("r", function(d) {
-      return Math.pow(radius(d.properties.count),4/5);
-    })
-    .style("fill", "red")
-    .style("stroke", "none")
-    .style("opacity", .6);
+  console.log("HERE AM I AND IT GOES FINE",myjson);
+
+
+
+  // var feature = g.selectAll("circle")
+  //   .data(collection.features).enter()
+  //   .append("circle")
+  //   .attr("r", function(d) {
+  //     return Math.pow(radius(d.properties.count),4/5);
+  //   })
+  //   .style("fill", "red")
+  //   .style("stroke", "none")
+  //   .style("opacity", .6);
+
+    var featureLn = g.selectAll("circle")
+      .data(collection.features).enter()
+      .append("circle")
+      .attr("r", function(d) {
+        return Math.pow(radius(d.properties.count),4/5);
+      })
+      .style(null)
+      .style("fill", "blue")
+      .style("stroke", "none")
+
+      .style("opacity", .7);
+
+
+
 
   // features du centre de Gravité géographique FIX ME!! CHANGE STYLE OF THE CENTRALITY POINT
   var g2 = svg.append("g").attr("class", "leaflet-zoom-hide");
@@ -619,7 +644,7 @@ console.log(infos);
     svg.attr("viewBox", SW.x + " " + NE.y + " " + Math.abs(NE.x - SW.x) + " " + Math.abs(NE.y - SW.y));
 
     // points
-    feature.attr("transform", function(d) {
+    featureLn.attr("transform", function(d) {
       return "translate(" +
         applyLatLngToLayer(d).x + "," +
         applyLatLngToLayer(d).y + ")";
@@ -671,6 +696,10 @@ console.log(infos);
     return (!isNaN(valLat) && valLat <= 90 && valLat >= -90 && !isNaN(valLng) && valLng <= 180 && valLng >= -180) ? true : false;
   }
 }
+
+
+
+
 
 var getRandomColor = function() {
   var letters = '0123456789ABCDEF'.split('');
@@ -737,6 +766,7 @@ Template.map.onRendered(function() {
     Session.set('TimeEnd', new Date(Session.get('slider')[1]));
 
     Edgesetup();
+
 
   })
 })
