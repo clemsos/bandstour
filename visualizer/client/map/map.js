@@ -568,7 +568,7 @@ d3.selectAll('circle').on('mouseover', function(d) {
     infos += p + ": " + d.properties[p] + "<br/> ";
 
   }
-  infos +=' <a href=https://wwww.google.fr/search?q='+ slugifyForGoogle(d.properties.name)+ ' target="_blank"> find '+d.properties.name+' on google</a>'
+  infos +=' <a href=https://www.google.fr/search?q='+ slugifyForGoogle(d.properties.name)+ ' target="_blank"> find '+d.properties.name+' on google</a>'
 console.log(infos);
 
   div
@@ -578,10 +578,10 @@ console.log(infos);
   div .html(infos)
       .style("left", (d3.event.pageX) + "px")
       .style("top", (d3.event.pageY - 28) + "px")
-      .on('click', function(dd){
-      //   //TRYING ANOTHER QWAY FOR THE LINK
-       var win = window.open("https://google.fr/search?q="+slugifyForGoogle(d.properties.name), '_blank');
-       })
+      // .on('click', function(dd){
+      // //   //TRYING ANOTHER QWAY FOR THE LINK
+      //  var win = window.open("https://google.fr/search?q="+slugifyForGoogle(d.properties.name), '_blank');
+      //  })
   })
 
   d3.selectAll('line').on('click', function(d) {
