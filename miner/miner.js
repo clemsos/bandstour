@@ -158,7 +158,7 @@ client.connect( url, function( err, db ) {
                 // console.log('meanDelayBetweenGigs:', meanDelayBetweenGigs, "days");
 
                 //source: http://www.sightline.org/research/graphics/climate-co2bymode/
-                var co2Spent = totalKm / 3;
+                var co2Spent = totalKm * 2 ;
                 // console.log('co2 depense par membre du groupe (en kg) /premiere approx:', co2Spent);
 
                 // store values 

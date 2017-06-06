@@ -14,11 +14,11 @@ artists_dir = "data/artists/"
 
 # API
 PLACE_BASE_URL = "https://app.bandsintown.com/events/popular/?location=PLACE&radius=10&per_page=100&authenticate=false&page=PAGE_NUMBER"
-DATES_BASE_URL = "http://api.bandsintown.com/artists/ARTIST/events.json?app_id=YOUR_APP_ID&date=all"
+DATES_BASE_URL = "http://api.bandsintown.com/artists/ARTIST/events.json?api_version=2.0&app_id=YOUR_APP_ID&date=all"
 bands_urls=[]
 
 def get_filename(place, page_number):
-    return places_dir + place.split("%")[0]+ "_" + str(page_number) +".json" 
+    return places_dir + place.split("%")[0]+ "_" + str(page_number) +".json"
 
 def get_page_url(place, page_number):
     url = PLACE_BASE_URL.replace("PLACE", place) # base url
@@ -72,15 +72,15 @@ for place in places :
     except :
         print "ERROR :",  place
 
-# get a unique list of artists 
+# get a unique list of artists
 artists = []
 for f in os.listdir(places_dir):
     # print "--- ", f
-    if f != "_1.json" : 
-        with open(os.path.join(places_dir,f)) as data_file:    
+    if f != "_1.json" :
+        with open(os.path.join(places_dir,f)) as data_file:
             try :
                 data = json.load(data_file)
-                for event in data["data"]["events"] : 
+                for event in data["data"]["events"] :
                     for artist in event["artists"]:
                         if artist["name"] not in artists : artists.append(artist["name"])
                         # print artist["name"]
