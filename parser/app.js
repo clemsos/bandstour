@@ -15,6 +15,7 @@ client.connect(url, function(err, db) {
 
     storeAllVenues(gigsCollection, "venues" ,function(){
         sampleGigs(5, db, gigsCollection, venuesCollection, function (){
+          debugger;
             db.close();
         });
     });
@@ -44,8 +45,8 @@ function cloneGigsInSelectedVenues(selectedVenues, gigsCollection, newCollName, 
     var start = new Date();
 
     gigsCollection.aggregate([
-       { $match: { "venue.id" : { $in : selectedVenues } } }, 
-       { $out: newCollName } 
+       { $match: { "venue.place" : { $in : selectedVenues } } },
+       { $out: newCollName }
     ], function (err, result) {
         if (err) { console.log(err); return; }
         var end = new Date() - start;
@@ -63,7 +64,7 @@ function getSelectedVenues(minShows, venuesCollection, callback){
              {
                 "$project": { // select fields
                     "id" : 1,
-                    "count" : 1 
+                    "count" : 1
                 }
             }
             , { $match : {"count" : { $gte  :  minShows }} }
@@ -72,7 +73,8 @@ function getSelectedVenues(minShows, venuesCollection, callback){
                 , selectedVenues: { $push: "$_id" }
                 }
             }
-    ], function (err, result) {
+    ],{allowDiskUse : true}
+    , function (err, result) {
         if (err) { console.log(err); return; }
 
         var end = new Date() - start;
@@ -103,9 +105,10 @@ function getGigsByArtist(artist, gigsCollection, callback){
             , gigs: { $push: { venue : "$venue", year : "$y", month : "$m", day : "$d", datetime : "$datetime" } }
             }
         }
-    ], function (err, result) {
+    ],{allowDiskUse : true}
+    , function (err, result) {
         if (err) { console.log(err); return; }
-        
+
         var end = new Date() - start;
         console.info("GET single artist execution time: %dms", end);
         // console.log(result[0]);
@@ -120,16 +123,16 @@ function storeAllVenues (collection, newCollName, callback) {
     collection.aggregate([
         {
             "$project": { // select fields
-                "venue" : 1 
+                "venue" : 1
             }
         }
         // , { $unwind: "$venue" } // développer array pour pouvoir en lire les valeurs
-        ,{ 
-            "$group": { 
-                "_id":  "$venue.id"  // gather artists name 
-                , "city" : { "$first" : "$venue.city"}
+        ,{
+            "$group": {
+                "_id":  "$venue.place",  // gather artists name
+                 "city" : { "$first" : "$venue.city"}
                 , "name" : { "$first" : "$venue.name"}
-                , "url" : { "$first" : "$venue.url"}
+                //, "url" : { "$first" : "$venue.url"}
                 , "country" : { "$first" : "$venue.country"}
                 , "region" : { "$first" : "$venue.region"}
                 , "longitude" : { "$first" : "$venue.longitude"}
@@ -140,10 +143,11 @@ function storeAllVenues (collection, newCollName, callback) {
             }
         }
         , { $out : newCollName}
-    ] // end pipeline
+    ]
+    ,{allowDiskUse : true} // end pipeline
     , function (err, result) {
         if (err) { console.log(err); return; }
-        
+
         var end = new Date() - start;
         console.info("Venues execution time: %dms", end);
 
@@ -167,19 +171,19 @@ function storeAllArtists (collection, newCollName, callback) {
             }
         }
         , { $unwind: "$artists" } // développer array pour pouvoir en lire les valeurs
-        ,{ 
-            "$group": { 
-                "_id":  "$artists.name"  // gather artists name 
+        ,{
+            "$group": {
+                "_id":  "$artists.name"  // gather artists name
                 , "mbid" : { "$first" : "$artists.mbid"}
                 , count : { "$sum" :  1 }// count the number of artists
-                , gigs: { 
-                    $push: { 
-                        venue : "$venue", 
+                , gigs: {
+                    $push: {
+                        venue : "$venue",
                         datetime : "$datetime"
-                        // year : "$y", 
-                        // month : "$m", 
-                        // day : "$d", 
-                    } 
+                        // year : "$y",
+                        // month : "$m",
+                        // day : "$d",
+                    }
                 }
 
             }
@@ -189,7 +193,7 @@ function storeAllArtists (collection, newCollName, callback) {
     ,{allowDiskUse : true}
     , function (err, result) {
         if (err) { console.log(err); return; }
-        
+
         var end = new Date() - start;
         console.info("Artists execution time: %dms", end);
 
