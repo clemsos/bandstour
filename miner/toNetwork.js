@@ -1,7 +1,7 @@
 var moment = require('moment');
 var client = require('mongodb').MongoClient;
 var Bulk = require('mongodb').Bulk;
-// console.log(Bulk);
+ console.log(Bulk);
 var url = 'mongodb://localhost:27017/bandstour';
 
 var col, Nodes, Edges;
@@ -80,7 +80,7 @@ saveArtist = function(slug, callback) {
     col.findOne({
             "slug": slug
         }, function(err, artist) {
-            if (err) throw err; 
+            if (err) throw err;
             // console.log(artist);
             parseArtist(artist, function(nodes, edges){
                 callback(nodes, edges)
@@ -91,6 +91,7 @@ saveArtist = function(slug, callback) {
 parseArtist = function(artist, callback) {
 
     // extract all venues
+    console.log(artist);
     var venues = artist.gigs
         .map(function(e) {
             return e.venue;
