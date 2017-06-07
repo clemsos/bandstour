@@ -35,7 +35,7 @@ client.connect(url, function(err, db) {
         // artistList = ["cannibal-corpse"];
         // artistList = ["david-guetta"];
         // artistList = ["foo-fighters"];
-        artistList = ["pneu"];
+        //artistList = ["pneu"];
 
         // Initialize the Ordered Batch, SWITCHED TO ORDERED AS UNORDERED DOESN'T ACKNOWLEDGE WRITES!!!
         var nodesBatch = Nodes.initializeOrderedBulkOp();
