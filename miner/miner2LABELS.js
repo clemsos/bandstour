@@ -24,12 +24,12 @@ client.connect( url, function( err, db ) {
     col.find( {}, { _id: 1 } ).toArray( function( err, data ) {
         if ( err ) throw err;
 
-         console.log("DD",data);
+        //  console.log("DD",data);
 
         artistList = data.map( function( item ) {
             return item._id;
         } );
-        console.log(artistList);
+
 
         for ( var j = artistList.length - 1; j >= 0; j-- ) {
             col.findOne( {
@@ -181,6 +181,7 @@ client.connect( url, function( err, db ) {
             } );
         };
     } );
+    console.log("ddddd",artistList);
     // db.close();
 } );
 
