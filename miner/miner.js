@@ -1,14 +1,27 @@
 var moment = require( 'moment' );
-var client = require( 'mongodb' ).MongoClient;
+var client = require( 'mongodb' ).MongoClient,
+Logger = require('mongodb').Logger  , assert = require('assert');
+
 var url = 'mongodb://localhost:27017/bandstour';
+Logger.setLevel('info');
 
 // Use connect method to connect to the Server
-client.connect( url, function( err, db ) {
+client.connect( url, {
+    db: {
+      native_parser: true
+    },
+    server: {
+      socketOptions: {
+        connectTimeoutMS: 5000
+      }
+    }} ,function( err, db )
+
+ {
     console.log( 'Connected correctly to server\n' );
 
     // db
-    var col = db.collection( 'selectedArtists' ),
-        newcol = db.collection( 'minedArtists' );
+    var col = db.collection( 'selectedArtists' );
+    var  newcol = db.collection( 'minedArtists' );
 
     // clean everything
     newcol.drop();
@@ -21,14 +34,15 @@ client.connect( url, function( err, db ) {
     // init
     var artistList = [];
 
-    col.find( {}, { _id: 1 } ).toArray( function( err, data ) {
+    col.find({} ).batchSize(10000000000000).explain().toArray( function( err, data ) {
         if ( err ) throw err;
 
-        // console.log(data);
+         console.log(data);
 
         artistList = data.map( function( item ) {
             return item._id;
         } );
+        console.log(artistList);
 
         for ( var j = artistList.length - 1; j >= 0; j-- ) {
             col.findOne( {
@@ -77,7 +91,7 @@ client.connect( url, function( err, db ) {
                         if ( !tourInProgress ) { // single gig
                             singleGigs.push( gig );
                             tourInProgress = false;
-                        } else { // last gig of the tour 
+                        } else { // last gig of the tour
                             // distance must be calculated before adding last gig
                             // since last gig.distanceToNextGig should not be part of tour.distance
                             tour.distance = 0;
@@ -116,7 +130,7 @@ client.connect( url, function( err, db ) {
                     }
                 }
 
-                // catch errors 
+                // catch errors
                 var nbDatesOnTour = 0;
                 for ( var n = 0; n < tours.length; n++ ) {
                     nbDatesOnTour += tours[ n ].gigs.length;
@@ -161,7 +175,7 @@ client.connect( url, function( err, db ) {
                 var co2Spent = totalKm * 2 ;
                 // console.log('co2 depense par membre du groupe (en kg) /premiere approx:', co2Spent);
 
-                // store values 
+                // store values
                 artist.name = artist._id;
                 artist.slug = slugify( artist._id );
                 delete( artist._id ); // remove id to allow auto mongo id
@@ -180,7 +194,7 @@ client.connect( url, function( err, db ) {
             } );
         };
     } );
-    // db.close();
+     //db.close();
 } );
 
 function getKmFromLatLong( lat1, lon1, lat2, lon2 ) {
@@ -212,4 +226,3 @@ function slugify( text ) {
         .replace( /^-+/, '' ) // Trim - from start of text
         .replace( /-+$/, '' ); // Trim - from end of text
 }
-

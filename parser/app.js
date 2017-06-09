@@ -15,7 +15,7 @@ client.connect(url, function(err, db) {
 
     storeAllVenues(gigsCollection, "venues" ,function(){
         sampleGigs(5, db, gigsCollection, venuesCollection, function (){
-          debugger;
+          
             db.close();
         });
     });
