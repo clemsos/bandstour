@@ -71,7 +71,7 @@ for artist in db.selectedArtists.find() :
         while  i<= (len(artist["gigs"])-2):
             nextgig= artist["gigs"][ i + 1 ]
             gig=artist["gigs"][ i ]
-            i += 1
+
             #print gig
             #TODO:save mv coords as an array for easy access for  dijkstra and tsne
             km=vincenty(gig["venue"]["latitude"],gig["venue"]["longitude"],nextgig["venue"]["latitude"],nextgig["venue"]["longitude"]).kilometers
@@ -92,6 +92,7 @@ for artist in db.selectedArtists.find() :
                 timeOnTour += gig["timeToNextGig"]
             else:
                 if tourInProgress==0:
+                    print "SG BF",gig["datetime"]
                     singleGigs.append(gig)
                     tourInProgress =0
                 else:
@@ -121,11 +122,13 @@ for artist in db.selectedArtists.find() :
                     print timeOnTour
                     print timeOffTour
                 else:
-                    print "SINGLE GIG DETECTED"
-                    singleGigs.append(nextgig)
+
+                    print "SINGLE GIG AT THE END DETECTED"
+                    #singleGigs.append(nextgig)
+                    print "SG AFT",gig["datetime"]
                     singleGigs.append(artist["gigs"][ i + 1 ])
                     tourInProgress=0
-
+            i += 1
 
         nbDatesOnTour = 0;
         for n in xrange(0,len(tours),1):
@@ -190,7 +193,9 @@ for artist in db.selectedArtists.find() :
         artist["meanOfGigsPerYear"] = meanOfGigsPerYear
         artist["meanDelayBetweenGigs"] = meanDelayBetweenGigs
         artist["co2Spent"] = co2Spent
-        print artist
+        print "artist", artist
         print len(artist["gigs"])
+        print "singleGigs", singleGigs
+        print "tours", tours
         if ARRET_WRONG =="STOP":
             break
