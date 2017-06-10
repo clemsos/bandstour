@@ -14,8 +14,8 @@ client.connect(url, function(err, db) {
     var venuesCollection = db.collection('venues');
 
     storeAllVenues(gigsCollection, "venues" ,function(){
-        sampleGigs(5, db, gigsCollection, venuesCollection, function (){
-          
+        sampleGigs(3, db, gigsCollection, venuesCollection, function (){
+
             db.close();
         });
     });
