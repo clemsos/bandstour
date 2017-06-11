@@ -34,6 +34,7 @@ def slugify(s):
 client = MongoClient()
 db = client["bandstour"]
 bandsintown =  db["bandsintown"]
+newcol = db['minedArtists']
 #setup mbrainz client
 #musicbrainzngs.set_useragent("Example music app", "0.1", "http://example.com/music")
 
@@ -118,20 +119,21 @@ for artist in db.selectedArtists.find() :
                     #tour["gigs"].append(gig)
                     tour["gigs"].append(nextgig)
                     tour["gigcoordsforcluster"].append([nextgig["venue"]["latitude"],nextgig["venue"]["longitude"]])
-                    tour["gigs"].append(artist["gigs"][ i + 1 ])
-                    tour["gigcoordsforcluster"].append([artist["gigs"][ i + 1 ]["venue"]["latitude"],artist["gigs"][ i + 1 ]["venue"]["longitude"]])
+                    #tour["gigs"].append(artist["gigs"][ i + 1 ])
+                    #tour["gigcoordsforcluster"].append([artist["gigs"][ i + 1 ]["venue"]["latitude"],artist["gigs"][ i + 1 ]["venue"]["longitude"]])
                     tour["nbGigs"]= len(tour["gigs"])
                     tourInProgress=0
                     tours.append(tour)
-                    print tour
-                    print timeOnTour
-                    print timeOffTour
+                    #print tour
+                    #print timeOnTour
+                    #print timeOffTour
                 else:
 
                     print "SINGLE GIG AT THE END DETECTED"
                     #singleGigs.append(nextgig)
                     print "SG AFT",gig["datetime"]
-                    singleGigs.append(artist["gigs"][ i + 1 ])
+                    #singleGigs.append(artist["gigs"][ i + 1 ])
+                    singleGigs.append(nextgig)
                     tourInProgress=0
             i += 1
 
@@ -151,7 +153,7 @@ for artist in db.selectedArtists.find() :
             sqEcarts = []
             sumSqEcarts = 0
             t=0
-            print "tours\n", tours
+            #print "tours\n", tours
             while t < len(tours):
                 sqEcart = (len(tours[ t ]["gigs"]) - meanTourLength)**2
                 print len(tours[ t ]["gigs"]),meanTourLength, sqEcart
@@ -178,7 +180,11 @@ for artist in db.selectedArtists.find() :
 
         print "timeasdays" ,totalTimeAsDays
         print totalTimeAsYears
-        tourDutyCycle = timeOnTour / totalTimeAsDays
+
+        try:
+            tourDutyCycle = timeOnTour / totalTimeAsDays
+        except ZeroDivisionError:
+            tourDutyCycle = 0
         meanOfGigsPerYear = len(artist["gigs"]) / totalTimeAsYears
 
 
@@ -198,9 +204,11 @@ for artist in db.selectedArtists.find() :
         artist["meanOfGigsPerYear"] = meanOfGigsPerYear
         artist["meanDelayBetweenGigs"] = meanDelayBetweenGigs
         artist["co2Spent"] = co2Spent
-        print "artist", artist
+        #print "artist", artist
+        print "PUSHING ARTIST ",artist["name"]
         print len(artist["gigs"])
-        print "singleGigs", singleGigs
-        print "tours", tours
+        #print "singleGigs", singleGigs
+        #print "tours", tours
+        newcol.insert(artist)
         if ARRET_WRONG =="STOP":
             break
