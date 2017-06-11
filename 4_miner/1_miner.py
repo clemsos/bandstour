@@ -87,7 +87,9 @@ for artist in db.selectedArtists.find() :
                 if tourInProgress==0:
                     tour={}
                     tour["gigs"]= []
+                    tour["gigcoordsforcluster"]=[]
                 tour["gigs"].append(gig)
+                tour["gigcoordsforcluster"].append([gig["venue"]["latitude"],gig["venue"]["longitude"]])
                 tourInProgress = 1
                 timeOnTour += gig["timeToNextGig"]
             else:
@@ -100,6 +102,7 @@ for artist in db.selectedArtists.find() :
                     for g in xrange(0,len(tour["gigs"]),1):
                         tour["distance"]+=tour["gigs"][g]["distanceToNextGig"]
                     tour["gigs"].append(gig)
+                    tour["gigcoordsforcluster"].append([gig["venue"]["latitude"],gig["venue"]["longitude"]])
                     tour["nbGigs"]=len(tour["gigs"])
                     tourInProgress =0
                     tours.append(tour)
@@ -114,7 +117,9 @@ for artist in db.selectedArtists.find() :
                         tour["distance"]+= tour["gigs"][ d ]["distanceToNextGig"]
                     #tour["gigs"].append(gig)
                     tour["gigs"].append(nextgig)
+                    tour["gigcoordsforcluster"].append([nextgig["venue"]["latitude"],nextgig["venue"]["longitude"]])
                     tour["gigs"].append(artist["gigs"][ i + 1 ])
+                    tour["gigcoordsforcluster"].append([artist["gigs"][ i + 1 ]["venue"]["latitude"],artist["gigs"][ i + 1 ]["venue"]["longitude"]])
                     tour["nbGigs"]= len(tour["gigs"])
                     tourInProgress=0
                     tours.append(tour)

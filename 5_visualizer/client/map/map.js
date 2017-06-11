@@ -474,6 +474,10 @@ L.control.layers(baseMaps, maplayers).addTo(map);
       })
       .style(null)
       .style("fill", "blue")
+      //THIS IS WHERE WE HAVE TO WRITE THE VENUE COLOR FUNCTION
+//      .style("fill", function(d) {
+//        return d.properties.colorTour;
+//      })
       .style("stroke", "none")
 
       .style("opacity", .7);
