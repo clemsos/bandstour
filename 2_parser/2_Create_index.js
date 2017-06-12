@@ -10,7 +10,19 @@ client.connect(url, function(err, db) {
     // console.log(db);
 
     var gigsCollection = db.collection('bandsintown');
-        gigsCollection.createIndex({artists : 1});
+    var gigsCollection2 = db.collection('minedArtists');
         gigsCollection.createIndex({artists : -1});
+        gigsCollection.createIndex({artists : 1});
+        gigsCollection2.createIndex({meanOfGigsPerYear : 1});
+        gigsCollection2.createIndex({meanOfGigsPerYear : -1});
+        gigsCollection2.createIndex({co2Spent : 1});
+        gigsCollection2.createIndex({co2Spent : -1});
+        gigsCollection2.createIndex({totalGigs : 1});
+        gigsCollection2.createIndex({totalGigs : -1});
+        gigsCollection2.createIndex({meanDelayBetweenGigs : -1});
+        gigsCollection2.createIndex({meanDelayBetweenGigs : 1});
+        gigsCollection2.createIndex({totalKm: 1});
+        gigsCollection2.createIndex({totalKm: -1});
+
 
 })
