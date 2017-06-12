@@ -129,15 +129,16 @@ function storeAllVenues (collection, newCollName, callback) {
         // , { $unwind: "$venue" } // développer array pour pouvoir en lire les valeurs
         ,{
             "$group": {
-                "_id":  "$venue.place",  // gather artists name
-                 "city" : { "$first" : "$venue.city"}
+                "_id":  "$venue.place"  // gather artists name
+                , "id" : { "$first" : "$venue.place"}
+                ,"city" : { "$first" : "$venue.city"}
                 , "name" : { "$first" : "$venue.name"}
                 //, "url" : { "$first" : "$venue.url"}
                 , "country" : { "$first" : "$venue.country"}
                 , "region" : { "$first" : "$venue.region"}
                 , "longitude" : { "$first" : "$venue.longitude"}
                 , "latitude" : { "$first" : "$venue.latitude"}
-                // , "id" : { "$first" : "id"}
+
 
                 , count : { "$sum" :  1 }// count the number of artists
             }

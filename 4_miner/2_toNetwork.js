@@ -31,10 +31,10 @@ client.connect(url, function(err, db) {
         var artistList = data.map(function(item) {
             return item.slug;
         });
-
+        console.log(artistList,"\n artistlist c etait juste avant!!!");
         // artistList = ["cannibal-corpse"];
-        // artistList = ["david-guetta"];
-        // artistList = ["foo-fighters"];
+        artistList = ["Zoogma"];
+        //artistList = ["foo-fighters"];
         //artistList = ["pneu"];
 
         // Initialize the Ordered Batch, SWITCHED TO ORDERED AS UNORDERED DOESN'T ACKNOWLEDGE WRITES!!!
@@ -50,7 +50,9 @@ client.connect(url, function(err, db) {
         for ( var j = artistList.length - 1; j >= 0; j-- ) {
             saveArtist(artistList[j], function (nodes, edges) {
                 for (var i = 0; i < nodes.length; i++) {
-                    nodesBatch.find({"data.id" : nodes[i].data.id }).upsert().updateOne(nodes[i])
+                  console.log(nodes[i]);
+                  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                    nodesBatch.find({"data.place" : nodes[i].data.place }).upsert().updateOne(nodes[i])
                 };
 
                 for (var i = 0; i < edges.length; i++) {
@@ -66,6 +68,7 @@ client.connect(url, function(err, db) {
 // Execute the operations
 executeBatch = function(edgesBatch, nodesBatch) {
     console.log("execute");
+    console.log(nodesBatch);
     nodesBatch.execute(function(err, result) {
         if(err) throw err;
         console.dir("nodes ok");
@@ -91,23 +94,29 @@ saveArtist = function(slug, callback) {
 parseArtist = function(artist, callback) {
 
     // extract all venues
-    console.log(artist);
+    //console.log(artist.name);
     var venues = artist.gigs
         .map(function(e) {
+            //console.log(e.venue);
             return e.venue;
         })
         .reduce(function(map, d, i, context) {
-            map[d.id] = map[d.id] ||  d;
-            map[d.id].count = (map[d.id].count || 0) + 1;
+            map[d.place] = map[d.place] || d;
+            map[d.place].count = (map[d.place].count || 0) + 1;
+            //console.log("map>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            //console.log("map",map);
             return map
         }, {});
 
     var nodes = [];
     Object.keys(venues).forEach(function(id) {
         var venue = venues[id];
-        var node = makeNode(artist.slug, venue.id, "venue", venue.latitude, venue.longitude, venue);
+        var node = makeNode(artist.slug, venue.place, "venue", venue.latitude, venue.longitude, venue);
+        //console.log("node",node);
         nodes.push(node);
-    })
+    }
+
+  )
 
     // calculate edges
     var edges = [];
@@ -118,7 +127,7 @@ parseArtist = function(artist, callback) {
             var gig = tour.gigs[j];
             var nextGig = tour.gigs[j + 1];
             // if(gig.venue.id != nextGig.venue.id) {
-            var edge = makeEdge(artist.slug, gig.venue.id, nextGig.venue.id, tourName);
+            var edge = makeEdge(artist.slug, gig.venue.place, nextGig.venue.place, tourName);
             edges.push(edge);
             // }
         }

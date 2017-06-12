@@ -1,4 +1,4 @@
-var moment = require( 'moment' );
+=var moment = require( 'moment' );
 var client = require( 'mongodb' ).MongoClient,
 Logger = require('mongodb').Logger  , assert = require('assert');
 
