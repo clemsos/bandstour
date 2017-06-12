@@ -1,7 +1,7 @@
 var moment = require('moment');
 var client = require('mongodb').MongoClient;
 var Bulk = require('mongodb').Bulk;
- console.log(Bulk);
+// console.log(Bulk);
 var url = 'mongodb://localhost:27017/bandstour';
 
 var col, Nodes, Edges;
@@ -31,11 +31,11 @@ client.connect(url, function(err, db) {
         var artistList = data.map(function(item) {
             return item.slug;
         });
-        console.log(artistList,"\n artistlist c etait juste avant!!!");
+
         // artistList = ["cannibal-corpse"];
-        artistList = ["Zoogma"];
-        //artistList = ["foo-fighters"];
-        //artistList = ["pneu"];
+        // artistList = ["david-guetta"];
+        // artistList = ["foo-fighters"];
+        //artistList = ["Zoogma"];
 
         // Initialize the Ordered Batch, SWITCHED TO ORDERED AS UNORDERED DOESN'T ACKNOWLEDGE WRITES!!!
         var nodesBatch = Nodes.initializeOrderedBulkOp();
@@ -50,9 +50,8 @@ client.connect(url, function(err, db) {
         for ( var j = artistList.length - 1; j >= 0; j-- ) {
             saveArtist(artistList[j], function (nodes, edges) {
                 for (var i = 0; i < nodes.length; i++) {
-                  console.log(nodes[i]);
-                  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                    nodesBatch.find({"data.place" : nodes[i].data.place }).upsert().updateOne(nodes[i])
+                  //console.log(nodes[i]);
+                    nodesBatch.find({"data.id" : nodes[i].data.id }).upsert().updateOne(nodes[i])
                 };
 
                 for (var i = 0; i < edges.length; i++) {
@@ -68,7 +67,6 @@ client.connect(url, function(err, db) {
 // Execute the operations
 executeBatch = function(edgesBatch, nodesBatch) {
     console.log("execute");
-    console.log(nodesBatch);
     nodesBatch.execute(function(err, result) {
         if(err) throw err;
         console.dir("nodes ok");
@@ -94,17 +92,14 @@ saveArtist = function(slug, callback) {
 parseArtist = function(artist, callback) {
 
     // extract all venues
-    //console.log(artist.name);
+    //console.log(artist);
     var venues = artist.gigs
         .map(function(e) {
-            //console.log(e.venue);
             return e.venue;
         })
         .reduce(function(map, d, i, context) {
-            map[d.place] = map[d.place] || d;
+            map[d.place] = map[d.place] ||  d;
             map[d.place].count = (map[d.place].count || 0) + 1;
-            //console.log("map>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            //console.log("map",map);
             return map
         }, {});
 
@@ -112,11 +107,8 @@ parseArtist = function(artist, callback) {
     Object.keys(venues).forEach(function(id) {
         var venue = venues[id];
         var node = makeNode(artist.slug, venue.place, "venue", venue.latitude, venue.longitude, venue);
-        //console.log("node",node);
         nodes.push(node);
-    }
-
-  )
+    })
 
     // calculate edges
     var edges = [];
@@ -127,7 +119,7 @@ parseArtist = function(artist, callback) {
             var gig = tour.gigs[j];
             var nextGig = tour.gigs[j + 1];
             // if(gig.venue.id != nextGig.venue.id) {
-            var edge = makeEdge(artist.slug, gig.venue.place, nextGig.venue.place, tourName);
+            var edge = makeEdge(artist.slug, gig.venue.id, nextGig.venue.id, tourName);
             edges.push(edge);
             // }
         }
@@ -144,6 +136,7 @@ makeNode = function(networkId, nodeId, group, lat, lng, data, x, y) {
         data: {
             //replaced  node name creation because they were concurrently created
             id: String(nodeId) || 'node-' + Date.now()+Math.random()*10000000000000000,
+            //id: 'node-' + Date.now()+Math.random()*10000000000000000,
             lat: lat || 0,
             lng: lng || 0,
             starred: false,
