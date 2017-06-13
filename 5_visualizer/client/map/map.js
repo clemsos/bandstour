@@ -13,14 +13,14 @@ Template.map.rendered = function() {
       return e.venue;
     })
     .reduce(function(map, d, i, context) {
-      map[d.id] = map[d.id] ||  d;
-      map[d.id].count = (map[d.id].count || 0) + 1;
+      map[d.place] = map[d.place] ||  d;
+      map[d.place].count = (map[d.place].count || 0) + 1;
       return map;
     }, {});
 
-  /*console.log(artist.gigs)
-  console.log(venues)
-*/
+console.log("artist.gigs",artist.gigs)
+console.log("venues",venues)
+
 //LOAD THE LIVENATION VENUE JSON
  myjson = HTTP.get(Meteor.absoluteUrl("/JSON_LIVENATION_VENUE.json"), function(err,result){
     console.log(result.content);
@@ -37,7 +37,7 @@ Template.map.rendered = function() {
   Object.keys(venues).forEach(function(id) {
     var venue = venues[id];
     if (!isValidCoordinate(venue.latitude, venue.longitude)) {
-      /*console.log(venue, id);*/
+  console.log(venue, id);
       return;
     }
 
@@ -456,31 +456,31 @@ L.control.layers(baseMaps, maplayers).addTo(map);
 
 
 
-  // var feature = g.selectAll("circle")
-  //   .data(collection.features).enter()
-  //   .append("circle")
-  //   .attr("r", function(d) {
-  //     return Math.pow(radius(d.properties.count),4/5);
-  //   })
-  //   .style("fill", "red")
-  //   .style("stroke", "none")
-  //   .style("opacity", .6);
+  var feature = g.selectAll("circle")
+    .data(collection.features).enter()
+    .append("circle")
+    .attr("r", function(d) {
+      return Math.pow(radius(d.properties.count),4/5);
+    })
+    .style("fill", "red")
+    .style("stroke", "none")
+    .style("opacity", .6);
 
-    var featureLn = g.selectAll("circle")
-      .data(collection.features).enter()
-      .append("circle")
-      .attr("r", function(d) {
-        return Math.pow(radius(d.properties.count),4/5);
-      })
-      .style(null)
-      .style("fill", "blue")
-      //THIS IS WHERE WE HAVE TO WRITE THE VENUE COLOR FUNCTION
-//      .style("fill", function(d) {
-//        return d.properties.colorTour;
-//      })
-      .style("stroke", "none")
-
-      .style("opacity", .7);
+//     var feature = g.selectAll("circle")
+//       .data(collection.features).enter()
+//       .append("circle")
+//       .attr("r", function(d) {
+//         return Math.pow(radius(d.properties.count),4/5);
+//       })
+//       .style(null)
+//       .style("fill", "blue")
+//       //THIS IS WHERE WE HAVE TO WRITE THE VENUE COLOR FUNCTION
+// //      .style("fill", function(d) {
+// //        return d.properties.colorTour;
+// //      })
+//       .style("stroke", "none")
+//
+//       .style("opacity", .7);
 
 
 
@@ -648,7 +648,7 @@ console.log(infos);
     svg.attr("viewBox", SW.x + " " + NE.y + " " + Math.abs(NE.x - SW.x) + " " + Math.abs(NE.y - SW.y));
 
     // points
-    featureLn.attr("transform", function(d) {
+    feature.attr("transform", function(d) {
       return "translate(" +
         applyLatLngToLayer(d).x + "," +
         applyLatLngToLayer(d).y + ")";

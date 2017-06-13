@@ -51,8 +51,8 @@ function cloneGigsInSelectedVenues(selectedVenues, gigsCollection, newCollName, 
         if (err) { console.log(err); return; }
         var end = new Date() - start;
         console.info("Artists execution time: %dms", end);
-        gigsCollection.createIndex({artists : 1});
-        gigsCollection.createIndex({artists : -1});
+        //gigsCollection.createIndex({artists : 1});
+        //gigsCollection.createIndex({artists : -1});
         callback(result[0]);
     });
 }

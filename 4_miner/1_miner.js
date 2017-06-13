@@ -1,6 +1,7 @@
 var moment = require( 'moment' );
 var client = require( 'mongodb' ).MongoClient;
-var url = 'mongodb://localhost:27017/bandstour';
+var url = 'mongodb://localhost:27017/bandstour?socketTimeoutMS=900000000000';
+
 
 // Use connect method to connect to the Server
 client.connect( url, function( err, db ) {
@@ -16,7 +17,7 @@ client.connect( url, function( err, db ) {
     // const
     var DELTA_BETWEEN_DATES = 10,
         PLANE_DISTANCE = 1500,
-        MINIMUM_DATES = 2;
+        MINIMUM_DATES = 5;
 
     // init
     var artistList = [];
