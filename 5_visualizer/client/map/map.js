@@ -13,6 +13,8 @@ Template.map.rendered = function() {
       return e.venue;
     })
     .reduce(function(map, d, i, context) {
+      //TODO:do a OR with previous version of db
+       
       map[d.place] = map[d.place] ||  d;
       map[d.place].count = (map[d.place].count || 0) + 1;
       return map;
