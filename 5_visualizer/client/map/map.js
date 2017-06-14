@@ -14,7 +14,7 @@ Template.map.rendered = function() {
     })
     .reduce(function(map, d, i, context) {
       //TODO:do a OR with previous version of db
-       
+
       map[d.place] = map[d.place] ||  d;
       map[d.place].count = (map[d.place].count || 0) + 1;
       return map;
@@ -25,7 +25,7 @@ console.log("venues",venues)
 
 //LOAD THE LIVENATION VENUE JSON
  myjson = HTTP.get(Meteor.absoluteUrl("/JSON_LIVENATION_VENUE.json"), function(err,result){
-    console.log(result.content);
+    //console.log(result.content);
     return result.content
 });
   // GeoJSON features
@@ -39,7 +39,7 @@ console.log("venues",venues)
   Object.keys(venues).forEach(function(id) {
     var venue = venues[id];
     if (!isValidCoordinate(venue.latitude, venue.longitude)) {
-  console.log(venue, id);
+  //console.log(venue, id);
       return;
     }
 
@@ -111,7 +111,7 @@ var colorsTours = d3.scale.category20c();
       console.log(artist.tours[ic].gigs[id - 1]);*/
       if (hhh == 0) {
         hhh = hhh + 1;
-        console.log("THERE////////////////");
+
       } else {
         /*  console.log("h", h)
           console.log("artist.tours[ic].gigs[id].datetime", artist.tours[ic].gigs[id].datetime)*/
@@ -135,8 +135,8 @@ var colorsTours = d3.scale.category20c();
           targetcity: artist.tours[ic].gigs[id].venue.city,
           targetid: artist.tours[ic].gigs[id].venue.id,
         };
-        /*        console.log("coordsEdge",coordsEdge)
-         */
+                console.log("coordsEdge",coordsEdge)
+
 
 
         edges.push(coordsEdge);
@@ -188,7 +188,7 @@ var colorsTours = d3.scale.category20c();
 
 
   // GeoJSON collection for Edges
-  // console.log( "q2", q );
+   console.log( "q2", q );
   var collectionedges = turf.featurecollection(r);
 
 

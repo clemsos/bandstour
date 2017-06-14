@@ -1,3 +1,4 @@
+var _ = require('agile');
 var moment = require( 'moment' );
 var client = require( 'mongodb' ).MongoClient;
 var url = 'mongodb://localhost:27017/bandstour?socketTimeoutMS=900000000000';
@@ -30,14 +31,18 @@ client.connect( url, function( err, db ) {
         artistList = data.map( function( item ) {
             return item._id;
         } );
-
+        //console.log(artistList);
+        //artistList = ["Stick to Your Guns"]
 
         for ( var j = artistList.length - 1; j >= 0; j-- ) {
+
+
             col.findOne( {
                 _id: artistList[ j ]
             }, function( err, artist ) {
                 if ( err ) throw err;
                 if ( artist.gigs.length <= MINIMUM_DATES ) return; // check minimum dates
+                artist.gigs = _.orderBy(artist.gigs, 'datetime' )
 
                 var totalKm = 0; //distance totale parcourue
                 var timeOnTour = 0;

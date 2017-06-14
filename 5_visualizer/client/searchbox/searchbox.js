@@ -17,7 +17,7 @@ Template.searchbox.events( {
     },
 
     'keyup #search': function( e ) {
-        // console.log( event.target.value );
+         console.log( event.target.value );
         if ( event.target.value != '' ) {
             Meteor.call( 'search', slugify( event.target.value ), {}, function( err, res ) {
                 if ( err ) {

@@ -100,6 +100,9 @@ function getGigsByArtist(artist, gigsCollection, callback){
         }
         , { $unwind: "$artists" } // développer array pour pouvoir en lire les valeurs
         , { $match : { "artists.name" : artist} }
+        ,{ $sort : {"$datetime" : 1 }
+
+        }
         , { $group: {
             "_id": "$artists.name"
             , gigs: { $push: { venue : "$venue", year : "$y", month : "$m", day : "$d", datetime : "$datetime" } }
@@ -108,7 +111,7 @@ function getGigsByArtist(artist, gigsCollection, callback){
     ],{allowDiskUse : true}
     , function (err, result) {
         if (err) { console.log(err); return; }
-
+        
         var end = new Date() - start;
         console.info("GET single artist execution time: %dms", end);
         // console.log(result[0]);

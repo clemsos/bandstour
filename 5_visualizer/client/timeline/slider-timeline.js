@@ -66,4 +66,4 @@ Template.timeSlider.helpers({
        return (Math.round((moment(Session.get('step'))/ 3600000))+" hrs")  ;
     }
 
-});
+  })
