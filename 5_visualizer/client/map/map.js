@@ -127,13 +127,13 @@ var colorsTours = d3.scale.category20c();
           sourcelong: artist.tours[ic].gigs[id - 1].venue.longitude,
           sourcename: artist.tours[ic].gigs[id - 1].venue.name,
           sourcecity: artist.tours[ic].gigs[id - 1].venue.city,
-          sourceid: artist.tours[ic].gigs[id - 1].venue.id,
+          sourceid: artist.tours[ic].gigs[id - 1].venue.place,
 
           targetlat: artist.tours[ic].gigs[id].venue.latitude,
           targetlong: artist.tours[ic].gigs[id].venue.longitude,
           targetname: artist.tours[ic].gigs[id].venue.name,
           targetcity: artist.tours[ic].gigs[id].venue.city,
-          targetid: artist.tours[ic].gigs[id].venue.id,
+          targetid: artist.tours[ic].gigs[id].venue.place,
         };
                 console.log("coordsEdge",coordsEdge)
 

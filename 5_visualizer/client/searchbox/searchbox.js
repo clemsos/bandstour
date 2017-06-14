@@ -1,7 +1,7 @@
-Template.searchbox.events( {
+Template.searchbox.es( {
     'submit form': function( e, template ) {
-        e.preventDefault( );
-        var bandName = event.target.bandName.value;
+        e.preDefault( );
+        var bandName = e.target.bandName.value;
         if ( !bandName ) return;
         Router.go( '/artists/' + slugify( bandName ) );
         document.getElementById( "search" ).value = '';
@@ -12,14 +12,14 @@ Template.searchbox.events( {
     },
 
     'click #searchClose': function( e ) {
-        e.preventDefault( );
+        e.preDefault( );
         document.getElementById( "search" ).value = '';
     },
 
     'keyup #search': function( e ) {
-         console.log( event.target.value );
-        if ( event.target.value != '' ) {
-            Meteor.call( 'search', slugify( event.target.value ), {}, function( err, res ) {
+         console.log( e.target.value );
+        if ( e.target.value != '' ) {
+            Meteor.call( 'search', slugify( e.target.value ), {}, function( err, res ) {
                 if ( err ) {
                     console.log( err );
                     return;
