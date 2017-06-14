@@ -1,0 +1,25 @@
+var client = require('mongodb').MongoClient;
+
+// Connection URL
+var url = 'mongodb://localhost:27017/bandstour';
+
+// Use connect method to connect to the Server
+client.connect(url, function(err, db) {
+
+    console.log("Connected correctly to server");
+    // console.log(db);
+
+    var gigsCollection = db.collection('bandsintown');
+    var selectedGigsCollection = db.collection('selectedGigs');
+    var venuesCollection = db.collection('venues');
+
+gigsCollection.createIndex({datetime : 1});
+gigsCollection.find().sort({datetime: 1}, function(err, cursor)
+{
+
+
+});
+
+
+
+});
