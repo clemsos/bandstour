@@ -53,7 +53,9 @@ client.connect( url, function( err, db ) {
                 tour.gigs = [];
 
                 var singleGigs = [];
-
+                var toursCoords = {};
+                var idTour =0;
+                var tourCoords =[];
                 var tourInProgress = false;
 
                 for ( var i = 0; i <= artist.gigs.length - 2; i++ ) { // exclude i=0 and last elt
@@ -73,11 +75,14 @@ client.connect( url, function( err, db ) {
                         if ( !tourInProgress ) {
                             tour = {};
                             tour.gigs = [];
+                            tourCoords =[];
                         }
 
                         tour.gigs.push( gig );
                         tourInProgress = true;
                         timeOnTour += gig.timeToNextGig;
+                        tourCoords.push([gig.venue.latitude,gig.venue.longitude])
+
                     } else {
 
                         // more than 2 days to next date
@@ -93,6 +98,7 @@ client.connect( url, function( err, db ) {
                             } // total distance
 
                             tour.gigs.push( gig );
+                            tourCoords.push([gig.venue.latitude,gig.venue.longitude])
                             tour.nbGigs = tour.gigs.length; // number of gigs
                             tourInProgress = false;
 
@@ -113,6 +119,7 @@ client.connect( url, function( err, db ) {
 
                             tour.gigs.push( nextGig );
                             tour.nbGigs = tour.gigs.length; // number of gigs
+                            tourCoords.push([nextGig.venue.latitude,nextGig.venue.longitude])
                             tourInProgress = false;
 
                             tours.push( tour );
