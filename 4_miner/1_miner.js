@@ -2,7 +2,7 @@ var _ = require('agile');
 var moment = require( 'moment' );
 var client = require( 'mongodb' ).MongoClient;
 var url = 'mongodb://localhost:27017/bandstour?socketTimeoutMS=900000000000';
-
+var vincenty = require('node-vincenty');
 
 // Use connect method to connect to the Server
 client.connect( url, function( err, db ) {
@@ -33,7 +33,7 @@ client.connect( url, function( err, db ) {
             return item._id;
         } );
         //console.log(artistList);
-        //artistList = ["Stick to Your Guns"]
+        artistList = ["Stick to Your Guns"]
         //artistList =["DJ Stingray"]
         //artistList = ["Stick to Your Guns"]
         //artistList = ["Deerful"] OK
@@ -62,7 +62,7 @@ client.connect( url, function( err, db ) {
                 var singleGigs = [];
                 var toursCoords = {};
                 var idTour =0;
-                var tourCoords =[];
+                tour.tourCoords =[];
                 var tourInProgress = false;
                 var dupl =0
 
@@ -71,7 +71,12 @@ client.connect( url, function( err, db ) {
                     var gig = artist.gigs[ i ];
 
                     // Calcul des distances entres gigs et de la distance totale parcourue
-                    var km = getKmFromLatLong( gig.venue.latitude, gig.venue.longitude, nextGig.venue.latitude, nextGig.venue.longitude );
+                    //var km = getKmFromLatLong( gig.venue.latitude, gig.venue.longitude, nextGig.venue.latitude, nextGig.venue.longitude );
+                    var km = vincenty.distVincenty(gig.venue.latitude, gig.venue.longitude, nextGig.venue.latitude, nextGig.venue.longitude)["distance"]/1000;
+                    //using vincenty for better accuracy
+                      //console.log(km)
+                    //console.log(vincenty.distVincenty(gig.venue.latitude, gig.venue.longitude, nextGig.venue.latitude, nextGig.venue.longitude)["distance"]/1000);
+
                     totalKm += km;
                     gig.distanceToNextGig = km;
 
@@ -90,13 +95,13 @@ client.connect( url, function( err, db ) {
                         if ( !tourInProgress ) {
                             tour = {};
                             tour.gigs = [];
-                            tourCoords =[];
+                            tour.tourCoords =[];
                         }
                       //  console.log("[[[[[[[[[[[[[[[[[[[HERE]]]]]]]]]]]]]]]]]]]");
                         tour.gigs.push( gig );
                         tourInProgress = true;
                         timeOnTour += gig.timeToNextGig;
-                        tourCoords.push([gig.venue.latitude,gig.venue.longitude])
+                        tour.tourCoords.push([gig.venue.latitude,gig.venue.longitude])
 
                     } else {
 
@@ -113,7 +118,8 @@ client.connect( url, function( err, db ) {
                             } // total distance
                         //    console.log("[[[[[[[[[[[[[[[[[[[THERE]]]]]]]]]]]]]]]]]]]");
                             tour.gigs.push( gig );
-                            tourCoords.push([gig.venue.latitude,gig.venue.longitude])
+                            tour.tourCoords.push([gig.venue.latitude,gig.venue.longitude])
+                            console.log(tour.tourCoords);
                             tour.nbGigs = tour.gigs.length; // number of gigs
                             tourInProgress = false;
 
@@ -134,7 +140,7 @@ client.connect( url, function( err, db ) {
 
                             tour.gigs.push( nextGig );
                             tour.nbGigs = tour.gigs.length; // number of gigs
-                            tourCoords.push([nextGig.venue.latitude,nextGig.venue.longitude])
+                            tour.tourCoords.push([nextGig.venue.latitude,nextGig.venue.longitude])
                             tourInProgress = false;
 
                             tours.push( tour );
@@ -172,8 +178,9 @@ client.connect( url, function( err, db ) {
                     // nd=tours[i].gigs.length
                     // console.log("tours[",i,"]gigs2",tours[i].gigs[nd-1]);
                     //console.log("tours[",i,"]gigs3",tours[i].gigs);
-                    }
-                        //console.log("tours0gigs",tours);
+                    console.log("tours[",i,"]gigs3",tours[i].tourCoords);///TO RETRIEVE GEO COORDS FOR DATA MINING
+                  }
+                    //    console.log("tours0gigs",tours);
                     //console.log("singleGigs",singleGigs);
 
                     //console.log("tours.length",tours.length);
