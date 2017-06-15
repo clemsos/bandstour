@@ -13,10 +13,11 @@ client.connect( url, function( err, db ) {
         newcol = db.collection( 'minedArtists' );
 
     // clean everything
-    newcol.drop();
+    //newcol.drop();
 
     // const
     var DELTA_BETWEEN_DATES = 10,
+        MIN_DELTA_BETWEEN_DATES =4,
         PLANE_DISTANCE = 1500,
         MINIMUM_DATES = 5;
 
@@ -33,6 +34,12 @@ client.connect( url, function( err, db ) {
         } );
         //console.log(artistList);
         //artistList = ["Stick to Your Guns"]
+        //artistList =["DJ Stingray"]
+        artistList = ["Stick to Your Guns"]
+        //artistList = ["Deerful"] OK
+        //artistList =["DJ Stingray"] // ONE DUP LEFT
+        //artistList = ["Stickup Kid"]//  OK
+        //artistList =["Sticky Fingers"]
 
         for ( var j = artistList.length - 1; j >= 0; j-- ) {
 
@@ -57,6 +64,7 @@ client.connect( url, function( err, db ) {
                 var idTour =0;
                 var tourCoords =[];
                 var tourInProgress = false;
+                var dupl =0
 
                 for ( var i = 0; i <= artist.gigs.length - 2; i++ ) { // exclude i=0 and last elt
                     var nextGig = artist.gigs[ i + 1 ];
@@ -71,13 +79,20 @@ client.connect( url, function( err, db ) {
                     gig.timeToNextGig = moment( nextGig.datetime ).diff( moment( gig.datetime ) );
 
                     // Detect tours : check number of days between 2 gigs
-                    if ( moment.duration( gig.timeToNextGig ).asDays() <= DELTA_BETWEEN_DATES ) { // on tour
+                    console.log("TEMP DUP",moment.duration( gig.timeToNextGig ).asHours() <= MIN_DELTA_BETWEEN_DATES )
+                    if ( moment.duration( gig.timeToNextGig ).asHours() <= MIN_DELTA_BETWEEN_DATES ){
+                      dupl+=1
+                       i+=1}
+
+                    if ( ( moment.duration( gig.timeToNextGig ).asDays() <= DELTA_BETWEEN_DATES  ) &&
+                    ( moment.duration( gig.timeToNextGig ).asHours() > MIN_DELTA_BETWEEN_DATES ))
+                     { // on tour
                         if ( !tourInProgress ) {
                             tour = {};
                             tour.gigs = [];
                             tourCoords =[];
                         }
-
+                        console.log("[[[[[[[[[[[[[[[[[[[HERE]]]]]]]]]]]]]]]]]]]");
                         tour.gigs.push( gig );
                         tourInProgress = true;
                         timeOnTour += gig.timeToNextGig;
@@ -96,7 +111,7 @@ client.connect( url, function( err, db ) {
                             for ( var g in tour.gigs ) {
                                 tour.distance += tour.gigs[ g ].distanceToNextGig;
                             } // total distance
-
+                            console.log("[[[[[[[[[[[[[[[[[[[THERE]]]]]]]]]]]]]]]]]]]");
                             tour.gigs.push( gig );
                             tourCoords.push([gig.venue.latitude,gig.venue.longitude])
                             tour.nbGigs = tour.gigs.length; // number of gigs
@@ -130,15 +145,37 @@ client.connect( url, function( err, db ) {
                     }
                 }
 
+                // // catch errors
+                // var nbDatesOnTour = 0;
+                // for ( var n = 0; n < tours.length; n++ ) {
+                //     nbDatesOnTour += tours[ n ].gigs.length;
+                // }
+                // if ( nbDatesOnTour + singleGigs.length != artist.gigs.length ) {
+                //     console.log( '!! ERROR >>>> nbDatesOnTour+singleGigs.length != artist.gigs.length:', nbDatesOnTour, '+', singleGigs.length, '!=', artist.gigs.length );
+                //     throw "Wrong number of dates";
+                // };
                 // catch errors
                 var nbDatesOnTour = 0;
                 for ( var n = 0; n < tours.length; n++ ) {
                     nbDatesOnTour += tours[ n ].gigs.length;
+                }// fin de for var i
+                if ( nbDatesOnTour + singleGigs.length  + dupl != artist.gigs.length ) {
+
+                    //throw "Wrong number of dates";
+                      console.log( '!! ERROR >>>> nbDatesOnTour+dupl+singleGigs.length != artist.gigs.length:', nbDatesOnTour, '+',dupl,'+', singleGigs.length, '!=', artist.gigs.length );
+                } else {
+                  console.log( 'GOT IT RIGHT! >>>> nbDatesOnTour+dupl+singleGigs.length == artist.gigs.length:', nbDatesOnTour, '+',dupl,'+', singleGigs.length, '!=', artist.gigs.length );
                 }
-                if ( nbDatesOnTour + singleGigs.length != artist.gigs.length ) {
-                    console.log( '!! ERROR >>>> nbDatesOnTour+singleGigs.length != artist.gigs.length:', nbDatesOnTour, '+', singleGigs.length, '!=', artist.gigs.length );
-                    throw "Wrong number of dates";
-                };
+                console.log("tours.length",tours.length);
+                for (var i = 0; i <  tours.length;i++){
+                    // console.log("tours[",i,"]gigs",tours[i].gigs[0]);
+                    // nd=tours[i].gigs.length
+                    // console.log("tours[",i,"]gigs2",tours[i].gigs[nd-1]);
+                    console.log("tours[",i,"]gigs3",tours[i].gigs);
+                    }
+                        //console.log("tours0gigs",tours);
+                    console.log("singleGigs",singleGigs);
+                    console.log("tours.length",tours.length);
 
                 // calcul du nombre moyen de dates / tour
                 var meanTourLength = nbDatesOnTour / tours.length;
@@ -190,7 +227,7 @@ client.connect( url, function( err, db ) {
                 artist.co2Spent = co2Spent;
 
                 console.log( artist.name, co2Spent );
-                newcol.insert( artist );
+      //          newcol.insert( artist );
             } );
         };
     } );
