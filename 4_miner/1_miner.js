@@ -13,17 +13,17 @@ client.connect( url, function( err, db ) {
         newcol = db.collection( 'minedArtists' );
 
     // clean everything
-    //newcol.drop();
+    newcol.drop();
 
     // const
-    var DELTA_BETWEEN_DATES = 10,
+    var DELTA_BETWEEN_DATES = 15,
         MIN_DELTA_BETWEEN_DATES =4,
         PLANE_DISTANCE = 1500,
         MINIMUM_DATES = 5;
 
     // init
     var artistList = [];
-    console.log(artistList);
+    //console.log(artistList);
     col.find( {}, { _id: 1 } ).toArray( function( err, data ) {
         if ( err ) throw err;
 
@@ -32,8 +32,8 @@ client.connect( url, function( err, db ) {
         artistList = data.map( function( item ) {
             return item._id;
         } );
-        //console.log(artistList);
-        artistList = ["Stick to Your Guns"]
+        console.log(artistList);
+        //artistList = ["Stick to Your Guns"]
         //artistList =["DJ Stingray"]
         //artistList = ["Stick to Your Guns"]
         //artistList = ["Deerful"] OK
@@ -119,7 +119,7 @@ client.connect( url, function( err, db ) {
                         //    console.log("[[[[[[[[[[[[[[[[[[[THERE]]]]]]]]]]]]]]]]]]]");
                             tour.gigs.push( gig );
                             tour.tourCoords.push([gig.venue.latitude,gig.venue.longitude])
-                            console.log(tour.tourCoords);
+                            //console.log(tour.tourCoords);
                             tour.nbGigs = tour.gigs.length; // number of gigs
                             tourInProgress = false;
 
@@ -170,15 +170,15 @@ client.connect( url, function( err, db ) {
                       console.log( '!! ERROR >>>> nbDatesOnTour+dupl+singleGigs.length != artist.gigs.length:', nbDatesOnTour, '+',dupl,'+', singleGigs.length, '!=', artist.gigs.length );
                       throw "Wrong number of dates";
                 } else {
-                  console.log( 'GOT IT RIGHT! >>>> nbDatesOnTour+dupl+singleGigs.length == artist.gigs.length:', nbDatesOnTour, '+',dupl,'+', singleGigs.length, '=', artist.gigs.length );
+                  //console.log( 'GOT IT RIGHT! >>>> nbDatesOnTour+dupl+singleGigs.length == artist.gigs.length:', nbDatesOnTour, '+',dupl,'+', singleGigs.length, '=', artist.gigs.length );
                 }
-                console.log("tours.length",tours.length);
+                //console.log("tours.length",tours.length);
                 for (var i = 0; i <  tours.length;i++){
                     // console.log("tours[",i,"]gigs",tours[i].gigs[0]);
                     // nd=tours[i].gigs.length
                     // console.log("tours[",i,"]gigs2",tours[i].gigs[nd-1]);
                     //console.log("tours[",i,"]gigs3",tours[i].gigs);
-                    console.log("tours[",i,"]gigs3",tours[i].tourCoords);///TO RETRIEVE GEO COORDS FOR DATA MINING
+                    //console.log("tours[",i,"]gigs3",tours[i].tourCoords);///TO RETRIEVE GEO COORDS FOR DATA MINING
                   }
                     //    console.log("tours0gigs",tours);
                     //console.log("singleGigs",singleGigs);
@@ -235,7 +235,9 @@ client.connect( url, function( err, db ) {
                 artist.co2Spent = co2Spent;
 
                 console.log( artist.name, co2Spent );
-      //          newcol.insert( artist );
+      //
+
+                newcol.insert( artist );
             } );
         };
     } );

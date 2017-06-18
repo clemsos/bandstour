@@ -17,12 +17,12 @@ client.connect(url, function(err, db) {
     Edges = db.collection('edges');
 
     // clean everything
-    // Nodes.drop();
-    // Edges.drop();
+     Nodes.drop();
+     Edges.drop();
 
 
     // find all artists
-    col.find({'gigs.400': {$exists: true}}, { // more than 100 gigs
+    col.find({'gigs.150': {$exists: true}}, { // more than 100 gigs
         slug: 1
     }).toArray(function(err, data) {
         if (err) throw err;
