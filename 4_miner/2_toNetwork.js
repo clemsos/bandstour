@@ -22,7 +22,7 @@ client.connect(url, function(err, db) {
 
 
     // find all artists
-    col.find({'gigs.150': {$exists: true}}, { // more than 100 gigs
+    col.find({'gigs.50': {$exists: true}}, { // more than 100 gigs
         slug: 1
     }).toArray(function(err, data) {
         if (err) throw err;
