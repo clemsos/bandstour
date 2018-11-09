@@ -7,6 +7,10 @@ node_modules
 activate
 init
 cesium
+4_miner/tour_miner
+4_miner/tour_minerBAK
+
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
