@@ -14,7 +14,8 @@ client.connect( url, function( err, db ) {
         newcol = db.collection( 'minedArtists' );
 
     // clean everything
-    //newcol.drop();
+    newcol.drop();
+    db.createCollection('minedArtists')
 
     // const
     var MAX_DELTA_BETWEEN_DATES = 10, //Days
@@ -23,7 +24,7 @@ client.connect( url, function( err, db ) {
 
     // init
     var artistList = [];
-    console.log(artistList);
+    //console.log(artistList);
     col.find( {}, { _id: 1 } ).toArray( function( err, data ) {
         if ( err ) throw err;
 
@@ -33,7 +34,7 @@ client.connect( url, function( err, db ) {
             return item._id;
         } );
         //console.log(artistList);
-        artistList = ["Stick to Your Guns"]
+        //artistList = ["Stick to Your Guns"]
 
         for ( var j = artistList.length - 1; j >= 0; j-- ) {
 
@@ -78,13 +79,13 @@ client.connect( url, function( err, db ) {
 
                     //SI LA DATE EST ENTRE NOS DEUX BORNES
                   if ( testme <= MAX_DELTA_BETWEEN_DATES*24  && testme > MIN_DELTA_BETWEEN_DATES){
-                    console.log("COND ZERO");
-                    console.log("OTHER TIME", math.abs(artist.gigs[i+1].datetime - artist.gigs[i].datetime));
-                    console.log("testme",testme)
-                    console.log("testme",testme*3600)
-                    console.log("testme",testme );
-                    console.log("MAX_DELTA_BETWEEN_DATES", MAX_DELTA_BETWEEN_DATES);
-                    console.log("MIN_DELTA_BETWEEN_DATES",MIN_DELTA_BETWEEN_DATES);
+                    //console.log("COND ZERO");
+                    //console.log("OTHER TIME", math.abs(artist.gigs[i+1].datetime - artist.gigs[i].datetime));
+                    //console.log("testme",testme)
+                    //console.log("testme",testme*3600)
+                    //console.log("testme",testme );
+                    //console.log("MAX_DELTA_BETWEEN_DATES", MAX_DELTA_BETWEEN_DATES);
+                    //console.log("MIN_DELTA_BETWEEN_DATES",MIN_DELTA_BETWEEN_DATES);
                     //SI LA DATE EST ENTRE NOS DEUX BORNES: ON RESET LE FAIT QUE LA DATE D AVANT ETAIT PERRAVE
                     condUnAnte = 0
 
@@ -100,22 +101,22 @@ client.connect( url, function( err, db ) {
                         tourInProgress = true;
                         timeOnTour += gig.timeToNextGig;
                         //console.log((gig.venue.latitude));
-                        console.log("gigLat",parseFloat(gig.venue.latitude));
-                        console.log("nextgigLat",parseFloat(nextGig.venue.latitude));
+                        //console.log("gigLat",parseFloat(gig.venue.latitude));
+                        //console.log("nextgigLat",parseFloat(nextGig.venue.latitude));
                         klat = gig.venue.latitude
                         //console.log(klat);
-                        console.log(math.round(parseFloat(gig.venue.latitude),3));
+                        //console.log(math.round(parseFloat(gig.venue.latitude),3));
 
                         tourCoords.push([math.round(parseFloat(gig.venue.latitude),3),math.round(parseFloat(gig.venue.longitude),3)])
 
                     } else if (testme > MAX_DELTA_BETWEEN_DATES*24  && testme > MIN_DELTA_BETWEEN_DATES) {
-                      console.log("COND UN");
-                      console.log("OTHER TIME", testme);
-                      console.log("testme",testme)
-                      console.log("testme",testme*3600)
-                      console.log("testme",testme );
-                      console.log("MAX_DELTA_BETWEEN_DATES", MAX_DELTA_BETWEEN_DATES*24);
-                      console.log("MIN_DELTA_BETWEEN_DATES",MIN_DELTA_BETWEEN_DATES);
+                     // console.log("COND UN");
+                     // console.log("OTHER TIME", testme);
+                     // console.log("testme",testme)
+                     // console.log("testme",testme*3600)
+                     // console.log("testme",testme );
+                     // console.log("MAX_DELTA_BETWEEN_DATES", MAX_DELTA_BETWEEN_DATES*24);
+                     // console.log("MIN_DELTA_BETWEEN_DATES",MIN_DELTA_BETWEEN_DATES);
 
                         // more than 2 days to next date
                         if ( !tourInProgress || condUnAnte == 1  ) { // single gig
@@ -123,7 +124,7 @@ client.connect( url, function( err, db ) {
                             tourInProgress = false;
 
                             //condUnAnte = 1
-                            console.log("PUSHE UNE");
+                            //console.log("PUSHE UNE");
                         } else { // last gig of the tour
                             // distance must be calculated before adding last gig
                             // since last gig.distanceToNextGig should not be part of tour.distance
@@ -140,8 +141,8 @@ client.connect( url, function( err, db ) {
                             //console.log("tourCoords",tourCoords);
                             toursCoords[idTour]=(tourCoords)
                             idTour +=1
-                            console.log("toursCoords",toursCoords);
-                            console.log("dupl",dupl);
+                           // console.log("toursCoords",toursCoords);
+                           // console.log("dupl",dupl);
                             tours.push( tour );
                         }
 
@@ -149,25 +150,25 @@ client.connect( url, function( err, db ) {
                         timeOffTour += gig.timeToNextGig;
                     }else if (testme <= MIN_DELTA_BETWEEN_DATES) {
                       dupl +=1
-                      console.log("COND DEUX");
-                      console.log("OTHER TIME", math.abs(artist.gigs[i+1].datetime - artist.gigs[i].datetime));
-                      console.log("testme",testme)
-                      console.log("testme",testme*3600)
-                      console.log("testme",testme );
-                      console.log("MAX_DELTA_BETWEEN_DATES", MAX_DELTA_BETWEEN_DATES);
-                      console.log("MIN_DELTA_BETWEEN_DATES",MIN_DELTA_BETWEEN_DATES);
+                      //console.log("COND DEUX");
+                      //console.log("OTHER TIME", math.abs(artist.gigs[i+1].datetime - artist.gigs[i].datetime));
+                      //console.log("testme",testme)
+                      //console.log("testme",testme*3600)
+                      //console.log("testme",testme );
+                      //console.log("MAX_DELTA_BETWEEN_DATES", MAX_DELTA_BETWEEN_DATES);
+                      //console.log("MIN_DELTA_BETWEEN_DATES",MIN_DELTA_BETWEEN_DATES);
                       condUnAnte == 0
-                      console.log(">>>>>>>>>>>>>>dupl HERE>>>>>>>>>>>>>");
+                      //console.log(">>>>>>>>>>>>>>dupl HERE>>>>>>>>>>>>>");
 
 
                     } else {
-                      console.log("COND TROIS");
-                      console.log("OTHER TIME", math.abs(artist.gigs[i+1].datetime - artist.gigs[i].datetime));
-                      console.log("testme",testme)
-                      console.log("testme",testme*3600)
-                      console.log("testme",testme );
-                      console.log("MAX_DELTA_BETWEEN_DATES", MAX_DELTA_BETWEEN_DATES);
-                      console.log("MIN_DELTA_BETWEEN_DATES",MIN_DELTA_BETWEEN_DATES);
+                      //console.log("COND TROIS");
+                      //console.log("OTHER TIME", math.abs(artist.gigs[i+1].datetime - artist.gigs[i].datetime));
+                      //console.log("testme",testme)
+                      //console.log("testme",testme*3600)
+                      //console.log("testme",testme );
+                      //console.log("MAX_DELTA_BETWEEN_DATES", MAX_DELTA_BETWEEN_DATES);
+                      //console.log("MIN_DELTA_BETWEEN_DATES",MIN_DELTA_BETWEEN_DATES);
 
 
                     }
@@ -194,8 +195,8 @@ client.connect( url, function( err, db ) {
                             toursCoords[idTour]=(tourCoords)
                             idTour +=1
                             //console.log("tourCoords",tourCoords);
-                            console.log("toursCoords",toursCoords);
-                            console.log("dupl",dupl);
+                            //console.log("toursCoords",toursCoords);
+                            //console.log("dupl",dupl);
                             tours.push( tour );
 
 
@@ -214,7 +215,8 @@ client.connect( url, function( err, db ) {
                 }
                 if ( nbDatesOnTour + singleGigs.length  + dupl != artist.gigs.length ) {
                     console.log( '!! ERROR >>>> nbDatesOnTour+singleGigs.length != artist.gigs.length:', nbDatesOnTour, '+', singleGigs.length, '!=', artist.gigs.length );
-                    throw "Wrong number of dates";
+                    //throw "Wrong number of dates";
+                    artist.gigs.length=nbDatesOnTour + singleGigs.length  + dupl
                 };
                 dupl = 0;
                 // calcul du nombre moyen de dates / tour
@@ -267,12 +269,25 @@ client.connect( url, function( err, db ) {
                 artist.co2Spent = co2Spent;
 
                 console.log( artist.name, co2Spent );
-                //newcol.insert( artist );
+                console.log( "HERE" );
+                newcol.insert( artist,function(err, res) {
+        if (err) throw err;
+        console.log("Document inserted");
+        console.log(res)
+        // close the connection to db when you are done with it
+        db.close();
+    }
+
+
+
+
+                );
+                //console.log(res);
             } );
         };
     } );
-    console.log("ddddd",artistList);
-    // db.close();
+    //console.log("ddddd",artistList);
+     //db.close();
 } );
 
 function getKmFromLatLong( lat1, lon1, lat2, lon2 ) {

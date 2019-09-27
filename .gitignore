@@ -35,6 +35,8 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+4_miner/tour_miner*
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

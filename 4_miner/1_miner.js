@@ -13,7 +13,9 @@ client.connect( url, function( err, db ) {
         newcol = db.collection( 'minedArtists' );
 
     // clean everything
-    newcol.drop();
+    //newcol.drop();
+    //db.createCollection('minedArtists')
+    
 
     // const
     var DELTA_BETWEEN_DATES = 15,
@@ -236,8 +238,11 @@ client.connect( url, function( err, db ) {
 
                 console.log( artist.name, co2Spent );
       //
-
-                newcol.insert( artist );
+                
+                 //query = db.collection( 'minedArtists' ).insert( artist );
+                const userData = db.collection( 'minedArtists' ).insert( artist )
+                .then(console.log(userData))
+                
             } );
         };
     } );
