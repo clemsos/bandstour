@@ -11,12 +11,17 @@ Template.timeSlider.rendered = function() {
     var timescale = Session.get("timescale");
     var dates = artist.gigs.map(function(d){ return moment(d.datetime).startOf(timescale).valueOf() });
 
-    // 
-    var max = d3.max(dates);
-    var min = d3.min(dates);
+    //
+  /*  var max = d3.max(dates);*/
+    var max = +artist.gigs[artist.gigs.length -1 ].datetime;
+    console.log("max",max);
+
+    var min = +artist.gigs[0].datetime;
+    console.log("min",min);
+
     var step = Math.round( (max - min)/dates.length );
 
-    // set 
+    // set
     Session.set("slider", [min, max]);
     Session.set("min", moment(min).format('YYYY-MM-DD') );
     Session.set("max", moment(max).format('YYYY-MM-DD') );
@@ -43,19 +48,22 @@ Template.timeSlider.helpers({
     max : function() { return Session.get('max'); },
     step : function() { return Session.get('step'); },
     start : function() {
-      return Session.get('slider')[0] 
+      return Session.get('slider')[0]
     },
     isSelected : function(value) {
         return Session.get("timescale") == value;
     },
-    end : function() { 
-      return Session.get('slider')[1] 
+    end : function() {
+      return Session.get('slider')[1]
     },
     startFormatted : function() {
        return moment(Session.get('slider')[0]).format('YYYY MM DD');  ;
     },
     endFormatted : function() {
        return moment(Session.get('slider')[1]).format('YYYY MM DD');  ;
+    },
+    stepFormatted : function() {
+       return (Math.round((moment(Session.get('step'))/ 3600000))+" hrs")  ;
     }
 
 });

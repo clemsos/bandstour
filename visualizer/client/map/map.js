@@ -1,8 +1,3 @@
-
-
-
-
-
 Template.map.rendered = function() {
   // session vars
   Session.set('minShowsPerVenue', 0);
@@ -73,6 +68,7 @@ Template.map.rendered = function() {
 
   // console.log("centralité géo", bandgravitycenterlat, bandgravitycenterlong);
   var q = [];
+
   q.push(turf.point(
     [bandgravitycenterlat, bandgravitycenterlong], {
       'name': artist.name,
@@ -91,90 +87,100 @@ Template.map.rendered = function() {
 
   /*-----GeoJSON features for Edges-----------*/
   var r = [];
-  h = 0;
+
   edges = [];
-  Object.keys(artist.gigs).forEach(function(id) {
+/*  console.log(artist);*/
+var colorsTours = d3.scale.category20c();
 
-    /*  console.log(artist.gigs[id]);
-      console.log(artist.gigs[id - 1]);*/
-    if (h == 0 || h >= artist.gigs.length) {
-      h = h + 1;
-    } else {
+  Object.keys(artist.tours).forEach(function(ic) {
+  var hhh = 0;
+    Object.keys(artist.tours[ic].gigs).forEach(function(id) {
 
-    /*  console.log("h", h)
-      console.log("artist.gigs[id].datetime", artist.gigs[id].datetime)*/
+/*      console.log(artist.tours[ic].gigs[id]);
+      console.log(artist.tours[ic].gigs[id - 1]);*/
+      if (hhh == 0) {
+        hhh = hhh + 1;
+        console.log("THERE////////////////");
+      } else {
+        /*  console.log("h", h)
+          console.log("artist.tours[ic].gigs[id].datetime", artist.tours[ic].gigs[id].datetime)*/
         //USELESS IF HEREBUT HEy... KEpT FOR BACKU
-      if ((typeof yieldTimeScaleStart == 'undefined') || (yieldTimeScaleStart <= artist.gigs[id].datetime && yieldTimeScaleEnd >= artist.gigs[id].datetime)) {
+        /*if ((typeof yieldTimeScaleStart == 'undefined') || (yieldTimeScaleStart <= artist.tours[ic].gigs[id].datetime && yieldTimeScaleEnd >= artist.tours[ic].gigs[id].datetime))
+        {*/
         var coordsEdge = {
           id: id,
-          datetime: artist.gigs[id - 1].datetime,
+          datetime: artist.tours[ic].gigs[id - 1].datetime,
+          colorTour: colorsTours(ic),
+          tour: ic,
+          sourcelat: artist.tours[ic].gigs[id - 1].venue.latitude,
+          sourcelong: artist.tours[ic].gigs[id - 1].venue.longitude,
+          sourcename: artist.tours[ic].gigs[id - 1].venue.name,
+          sourcecity: artist.tours[ic].gigs[id - 1].venue.city,
+          sourceid: artist.tours[ic].gigs[id - 1].venue.id,
 
-          sourcelat: artist.gigs[id - 1].venue.latitude,
-          sourcelong: artist.gigs[id - 1].venue.longitude,
-          sourcename: artist.gigs[id - 1].venue.name,
-          sourcecity: artist.gigs[id - 1].venue.city,
-          sourceid: artist.gigs[id - 1].venue.id,
-
-          targetlat: artist.gigs[id].venue.latitude,
-          targetlong: artist.gigs[id].venue.longitude,
-          targetname: artist.gigs[id].venue.name,
-          targetcity: artist.gigs[id].venue.city,
-          targetid: artist.gigs[id].venue.id,
+          targetlat: artist.tours[ic].gigs[id].venue.latitude,
+          targetlong: artist.tours[ic].gigs[id].venue.longitude,
+          targetname: artist.tours[ic].gigs[id].venue.name,
+          targetcity: artist.tours[ic].gigs[id].venue.city,
+          targetid: artist.tours[ic].gigs[id].venue.id,
         };
-/*        console.log("coordsEdge",coordsEdge)
-*/
+        /*        console.log("coordsEdge",coordsEdge)
+         */
 
 
         edges.push(coordsEdge);
+        /*}*/
+
+        /*  console.log("edges",edges)
+          console.log("edges",coordsEdge)*/
+
+        if (hhh == 0 || hhh >= artist.tours[ic].gigs.length || (!isValidCoordinate(coordsEdge.sourcelat, coordsEdge.sourcelong)) && (!isValidCoordinate(coordsEdge.targetlat, coordsEdge.targetlong))) {
+          hhh = hhh + 1;
+          return;
+        } else {
+          // parse GeoJSON  point
+          var p = turf.linestring(
+            [
+              [coordsEdge.sourcelat, coordsEdge.sourcelong],
+              [coordsEdge.targetlat, coordsEdge.targetlong]
+            ], {
+
+              'id': coordsEdge.id,
+              'datetime': coordsEdge.datetime,
+              'colorTour':coordsEdge.colorTour,
+              'tour':coordsEdge.tour,
+              'sourcelat': coordsEdge.sourcelat,
+              'sourcelong': coordsEdge.sourcelong,
+              'sourcename': coordsEdge.sourcename,
+              'sourcecity': coordsEdge.sourcecity,
+              'sourceid': coordsEdge.sourceid,
+
+              'targetlat': coordsEdge.targetlat,
+              'targetlong': coordsEdge.targetlong,
+              'targetname': coordsEdge.targetname,
+              'targetcity': coordsEdge.targetcity,
+              'targetid': coordsEdge.targetid,
+
+
+            }
+
+          r.push(p);
+          //console.log("q1",q);
+          ///add coords for gravitycentercalculation
+
+        }
       }
 
-      /*  console.log("edges",edges)
-        console.log("edges",coordsEdge)*/
-
-      if (h = 0 || h >= artist.gigs.length || (!isValidCoordinate(coordsEdge.sourcelat, coordsEdge.sourcelong)) && (!isValidCoordinate(coordsEdge.targetlat, coordsEdge.targetlong))) {
-        h = h + 1;
-        return;
-      } else {
-        // parse GeoJSON  point
-        var p = turf.linestring(
-          [
-            [coordsEdge.sourcelat, coordsEdge.sourcelong],
-            [coordsEdge.targetlat, coordsEdge.targetlong]
-          ], {
-
-            'id': coordsEdge.id,
-            'datetime': coordsEdge.datetime,
-            'sourcelat': coordsEdge.sourcelat,
-            'sourcelong': coordsEdge.sourcelong,
-            'sourcename': coordsEdge.sourcename,
-            'sourcecity': coordsEdge.sourcecity,
-            'sourceid': coordsEdge.sourceid,
-
-            'targetlat': coordsEdge.targetlat,
-            'targetlong': coordsEdge.targetlong,
-            'targetname': coordsEdge.targetname,
-            'targetcity': coordsEdge.targetcity,
-            'targetid': coordsEdge.targetid,
-
-
-          }
-        );
-
-        r.push(p);
-        //console.log("q1",q);
-        ///add coords for gravitycentercalculation
-
-      }
-    }
-
+    });
   });
+
 
   // GeoJSON collection for Edges
   // console.log( "q2", q );
   var collectionedges = turf.featurecollection(r);
 
 
-
+console.log("collectionedges",collectionedges);
 
 
   // setup map
@@ -202,6 +208,7 @@ Template.map.rendered = function() {
       point: projectPoint
     }),
     path = d3.geo.path().projection(transform);
+  var popup = L.popup();
 
   // radius scale
   var radius = d3.scale.linear()
@@ -217,7 +224,7 @@ Template.map.rendered = function() {
     .data(collection.features).enter()
     .append("circle")
     .attr("r", function(d) {
-      return radius(d.properties.count);
+      return Math.pow(radius(d.properties.count),4/5);
     })
     .style("fill", "red")
     .style("stroke", "none")
@@ -233,17 +240,11 @@ Template.map.rendered = function() {
     .style("stroke", "none")
     .style("opacity", .8);
 
-  d3.selectAll("circle").on('mouseover', function(d) {
-    var infos = "";
-    for (var p in d.properties) {
-      infos += p + ": " + d.properties[p] + "\n";
-    }
-    console.log(infos);
-  });
+
 
 
   // features des edges
-  var gradient = svg.append("defs")
+/*  var gradient = svg.append("defs")
     .append("linearGradient")
     .attr("id", "gradient")
     .attr("x1", "0%")
@@ -260,7 +261,7 @@ Template.map.rendered = function() {
   gradient.append("stop")
     .attr("offset", "100%")
     .attr("stop-color", "#533")
-    .attr("stop-opacity", 1);
+    .attr("stop-opacity", 1);*/
 
   /*    var marker = svg.append("defs")
         .append("marker")
@@ -284,54 +285,83 @@ Template.map.rendered = function() {
     .data(collectionedges.features).enter()
     .append('line')
     //  .style('stroke', 'yellow')
-    .style('stroke', "url(#gradient)")
+    .style('stroke', function(d) {
+      return d.properties.colorTour;
+    })
+
     /*      .style('marker-end',"url(#arrow)")*/
-    .style('stroke-width', '4')
+    .style('stroke-width', '2')
     /*.style('opacity', .8);*/
-  //TODO:IMPORT TIME TO NEXT GIG SELECT IF SAME OR DIFFERENT TOUR BY COMPARING IF UNDER 10 DAYS , IF NOT SAME IF SO: DIFFERENT
-  // console.log( "featureedges", featureedges );
+    //TODO:IMPORT TIME TO NEXT GIG SELECT IF SAME OR DIFFERENT TOUR BY COMPARING IF UNDER 10 DAYS , IF NOT SAME IF SO: DIFFERENT
+     console.log( "featureedges", featureedges );
+
+//POPUP MECANISM But we need a switch for choosing between the 2
+  d3.selectAll("circle").on('mouseover', function(d) {
+       var infos = "";
+       for (var p in d.properties) {
+         infos += p + ": " + d.properties[p] + "\n";
+       }
+/*     console.log("d",d)*/
+       popup
+           .setLatLng(d.geometry.coordinates)
+           .setContent(infos)
+           .openOn(map);
+console.log(d.geometry.coordinates);
+       console.log(infos);
+     });
+
   d3.selectAll('line').on('mouseover', function(d) {
     var infos = '';
     // linestring
     for (var p in d.properties) {
       infos += p + ': ' + d.properties[p] + '\n';
     }
+    map.on('click', function(e) {
+      popup
+          .setLatLng(e.latlng)
+          .setContent(infos)
+          .openOn(map);
+    });
+
+
+
+    console.log(infos);
     // console.log( infos );
   });
 
 
   ///SELECTOR FOR THE EDGES
-if (!initialRead || initialRead == 0)
-{
-  var initialRead = "1";
-  Session.set( 'TimeStart', new Date(Session.get('min')));
-  Session.set( 'TimeEnd', new Date( Session.get('max')));
-  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-}
+  if (!initialRead || initialRead == 0) {
+    var initialRead = "1";
+    Session.set('TimeStart', new Date(Session.get('min')));
+    Session.set('TimeEnd', new Date(Session.get('max')));
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+  }
 
-var TimeStart = Session.get('TimeStart');
-var TimeEnd = Session.get('TimeEnd');
+  var TimeStart = Session.get('TimeStart');
+  var TimeEnd = Session.get('TimeEnd');
 
 
-Edgesetup = function () {  g3.selectAll("line").attr("opacity", function(d) {
-/*        console.log("d", d);*/
+  Edgesetup = function() {
+    g3.selectAll("line").attr("opacity", function(d) {
+      /*        console.log("d", d);*/
 
-        if (typeof d.properties.datetime == 'undefined') {
-          console.log("dERROR", d)
-          return;
+      if (typeof d.properties.datetime == 'undefined') {
+        console.log("dERROR", d)
+        return;
 
-        } else {
-          console.log("d.properties.datetime",d.properties.datetime);
-          console.log("TimeStart",TimeStart);
-          console.log("TimeEnd",TimeEnd);
-          console.log("d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd",d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd);
-          return (d.properties.datetime >= Session.get('TimeStart') && d.properties.datetime <= Session.get('TimeEnd')) ? 1 : 0
-        }
+      } else {
+        /*console.log("d.properties.datetime",d.properties.datetime);
+        console.log("TimeStart",TimeStart);
+        console.log("TimeEnd",TimeEnd);
+        console.log("d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd",d.properties.datetime >= TimeStart && d.properties.datetime <= TimeEnd);*/
+        return (d.properties.datetime >= Session.get('TimeStart') && d.properties.datetime <= Session.get('TimeEnd')) ? 1 : 0
+      }
     });
-}
+  }
 
-Edgesetup();
-    // define projection
+  Edgesetup();
+  // define projection
 
 
   function resetView() {
@@ -340,14 +370,15 @@ Edgesetup();
     update();
   }
 
-   update =  function () {
+  update = function() {
     var mapBounds = map.getBounds();
     var SW = map.latLngToLayerPoint(mapBounds._southWest),
       NE = map.latLngToLayerPoint(mapBounds._northEast);
     // console.log(NE, SW);
     // console.log(Math.abs(NE.x - SW.x), Math.abs(NE.y - SW.y));
-/*  console.log(this);
-*/    svg.attr("viewBox", SW.x + " " + NE.y + " " + Math.abs(NE.x - SW.x) + " " + Math.abs(NE.y - SW.y));
+    /*  console.log(this);
+     */
+    svg.attr("viewBox", SW.x + " " + NE.y + " " + Math.abs(NE.x - SW.x) + " " + Math.abs(NE.y - SW.y));
 
     // points
     feature.attr("transform", function(d) {
@@ -362,8 +393,9 @@ Edgesetup();
         applyLatLngToLayer(d).x + "," +
         applyLatLngToLayer(d).y + ")";
     });
-/*    console.log(featureedges);
-*/    featureedges.attr('x1', function(d) {
+    /*    console.log(featureedges);
+     */
+    featureedges.attr('x1', function(d) {
 
         return applyLatLngToLayerForEdges(map, d.geometry.coordinates[0]).x;
       })
@@ -438,16 +470,16 @@ Template.map.events({
 
 
 
-  Template.map.onRendered(function(){
-   Deps.autorun(function(){
+Template.map.onRendered(function() {
+  Deps.autorun(function() {
 
 
-  var sess1 = Session.get('slider')[0];
-  /*var sess2 = Session.get('slider')[1];*/
-  Session.set( 'TimeStart', new Date(Session.get('slider')[0]));
-  Session.set( 'TimeEnd', new Date( Session.get('slider')[1]));
+    var sess1 = Session.get('slider')[0];
+    /*var sess2 = Session.get('slider')[1];*/
+    Session.set('TimeStart', new Date(Session.get('slider')[0]));
+    Session.set('TimeEnd', new Date(Session.get('slider')[1]));
 
-Edgesetup();
+    Edgesetup();
 
   })
 })

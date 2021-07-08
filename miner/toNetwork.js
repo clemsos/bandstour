@@ -37,7 +37,9 @@ client.connect(url, function(err, db) {
         // artistList = ["foo-fighters"];
         artistList = ["pneu"];
 
-        // Initialize the Ordered Batch, SWITCHED TO ORDERED AS UNORDERED DOESN'T ACKNOWLEDGE WRITES!!!
+        // Initialize the Ordered Batch
+        //SWITCHED TO ORDERED AS UNORDERED DOESN'T ACKNOWLEDGE WRITES!!!
+        
         var nodesBatch = Nodes.initializeOrderedBulkOp();
         var edgesBatch = Edges.initializeOrderedBulkOp();
 
@@ -50,9 +52,15 @@ client.connect(url, function(err, db) {
         for ( var j = artistList.length - 1; j >= 0; j-- ) {
             saveArtist(artistList[j], function (nodes, edges) {
                 for (var i = 0; i < nodes.length; i++) {
+                    ///add all venues
                     nodesBatch.find({"data.id" : nodes[i].data.id }).upsert().updateOne(nodes[i])
                 };
+                    ///TODO:add all artist
 
+                    ///TODO: add all artist/venue edges
+
+
+                    ///add all venue/venue edges
                 for (var i = 0; i < edges.length; i++) {
                     edgesBatch.insert(edges[i])
                 };
@@ -127,8 +135,8 @@ parseArtist = function(artist, callback) {
 
     callback(nodes, edges);
 }
-
-makeNode = function(networkId, nodeId, group, lat, lng, data, x, y) {
+///TODO: make more general as to import artists as well
+makeNode = function(nodeId, group, lat, lng, data, x, y) {
     return {
         group: 'nodes',
         data: {
@@ -144,11 +152,12 @@ makeNode = function(networkId, nodeId, group, lat, lng, data, x, y) {
             x: x || Math.random() * 800,
             y: y || Math.random() * 600
         },
-        networkId: networkId,
+        ///is networkID relevant here?
+        //networkId: networkId,
         createdAt: Date.now()
     }
 };
-
+///OK
 makeEdge = function(networkId, source, target, group, data) {
     return {
         group: 'edges',
@@ -160,6 +169,7 @@ makeEdge = function(networkId, source, target, group, data) {
             'group': group || "group",
             data: data
         },
+        ///is always the missing term... It has to be a list
         networkId: networkId,
         createdAt: Date.now()
     }
